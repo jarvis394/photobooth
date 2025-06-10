@@ -40,7 +40,7 @@ export default async function DomainHome({
       <Head>
         <title>{user.name} | Valley</title>
       </Head>
-      <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+      <div className="flex min-h-full w-full flex-col items-center justify-center gap-4 py-8">
         <h1 className="text-2xl font-medium">{user?.name}</h1>
         <Wrapper>
           <div className="grid w-full grid-cols-1 gap-4 min-sm:grid-cols-2 min-lg:grid-cols-3 min-xl:grid-cols-4">
