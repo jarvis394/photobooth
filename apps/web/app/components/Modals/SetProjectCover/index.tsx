@@ -2,22 +2,18 @@ import React, { useState } from 'react'
 import Button from '@valley/ui/Button'
 import ModalHeader from '@valley/ui/ModalHeader'
 import ModalFooter from '@valley/ui/ModalFooter'
-import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form } from 'react-router'
 import { useRemixForm } from 'remix-hook-form'
 import { useIsPending } from 'app/utils/misc'
-import { useProject } from 'app/utils/project'
+import { useProject, useProjectFolderFiles } from 'app/utils/queries/project'
 import { ProjectWithFolders } from '@valley/shared'
 import { File } from '@valley/db'
 import ModalContent from '@valley/ui/ModalContent'
-import { ProjectSetCoverSchema } from 'app/routes/api+/projects+/$id.setCover'
+import { ProjectSetCoverSchema } from 'app/routes/api+/projects+/$projectId.setCover'
 import ErrorModalContent from '../ErrorModalContent'
 import styles from './SetProjectCover.module.css'
-import { useFiles } from 'app/utils/files'
 import Image from '@valley/ui/Image'
-
-type FormData = z.infer<typeof ProjectSetCoverSchema>
 
 const resolver = zodResolver(ProjectSetCoverSchema)
 
@@ -33,7 +29,7 @@ const ModalContents: React.FC<
   const [fileId] = useState(searchParams.get('modal-fileId'))
   const file = files?.find((e) => e.id === fileId)
   const formAction = '/api/projects/' + project?.id + '/setCover'
-  const { register, handleSubmit } = useRemixForm<FormData>({
+  const { register, handleSubmit } = useRemixForm({
     resolver,
     submitConfig: {
       action: formAction,
@@ -108,8 +104,10 @@ const ModalContents: React.FC<
 const SetProjectCoverModal: React.FC<SetProjectCoverModalProps> = ({
   onClose,
 }) => {
-  const project = useProject()
-  const files = useFiles()
+  const { data: projectData } = useProject()
+  const { data: filesData } = useProjectFolderFiles()
+  const project = projectData?.project
+  const files = filesData?.files
 
   return <ModalContents onClose={onClose} project={project} files={files} />
 }

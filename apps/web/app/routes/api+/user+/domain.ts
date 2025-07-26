@@ -14,8 +14,6 @@ export const UserDomainAddSchema = z.object({
   domain: DomainSchema,
 })
 
-type FormData = z.infer<typeof UserDomainAddSchema>
-
 const resolver = zodResolver(UserDomainAddSchema)
 
 export const loader = () => redirect('/projects')
@@ -27,7 +25,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     errors,
     data: submissionData,
     receivedValues: defaultValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
   if (errors) {
     return data(
       { ok: false, errors, defaultValues },
@@ -83,7 +81,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
       {
         ok: false,
         errors: {
-          root: `Error occurred: ${(e as Error).message}`,
+          root: { message: `Error occurred: ${(e as Error).message}` },
         },
         defaultValues,
       },

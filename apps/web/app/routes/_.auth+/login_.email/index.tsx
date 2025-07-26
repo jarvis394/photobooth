@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from '../auth.module.css'
 import { SEOHandle } from '@nasa-gcn/remix-seo'
-import { Form, Link, useSearchParams, redirect } from 'react-router'
+import { Form, Link, useSearchParams, redirect, data } from 'react-router'
 import { requireAnonymous } from 'app/server/auth/auth.server'
 import Button from '@valley/ui/Button'
 import { ArrowLeft } from 'geist-ui-icons'
@@ -18,7 +18,6 @@ import {
   RemixFormProvider,
   useRemixForm,
 } from 'remix-hook-form'
-import { FieldErrors } from 'react-hook-form'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import Stack from '@valley/ui/Stack'
 import { createToastHeaders } from 'app/server/toast.server'
@@ -32,8 +31,6 @@ const LoginFormSchema = z.object({
   redirectTo: z.string().optional(),
 })
 
-type FormData = z.infer<typeof LoginFormSchema>
-
 const resolver = zodResolver(LoginFormSchema)
 
 export const handle: SEOHandle = {
@@ -45,9 +42,9 @@ export async function action({ request }: Route.ActionArgs) {
 
   const {
     errors,
-    data,
+    data: submissionData,
     receivedValues: defaultValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
 
   checkHoneypot(defaultValues)
 
@@ -58,8 +55,8 @@ export async function action({ request }: Route.ActionArgs) {
   try {
     const response = await auth.api.signInEmail({
       body: {
-        email: data.email,
-        password: data.password,
+        email: submissionData.email,
+        password: submissionData.password,
       },
       returnHeaders: true,
     })
@@ -68,38 +65,39 @@ export async function action({ request }: Route.ActionArgs) {
       type: 'info',
       description: 'You are now logged in',
     })
-    const redirectTo = safeRedirect(data.redirectTo, '/projects')
+    const redirectTo = safeRedirect(submissionData.redirectTo, '/projects')
 
     return redirect(redirectTo, {
       headers: combineHeaders(toastHeaders, response.headers),
     })
   } catch (e) {
-    return {
-      errors: {
-        password: {
-          type: 'validate',
-          message: 'Invalid email or password',
+    return data(
+      {
+        errors: {
+          password: {
+            message: 'Invalid email or password',
+          },
         },
-      } satisfies FieldErrors<FormData>,
-      defaultValues: data,
-    }
+        defaultValues: submissionData,
+      },
+      { status: 401 }
+    )
   }
 }
 
-const LoginViaEmailPage: React.FC<Route.ComponentProps> = ({ actionData }) => {
+const LoginViaEmailPage: React.FC<Route.ComponentProps> = () => {
   const [searchParams] = useSearchParams()
   const isPending = useIsPending()
   const redirectTo = searchParams.get(redirectToKey)
   const target = searchParams.get(targetKey)
-  const methods = useRemixForm<FormData>({
+  const methods = useRemixForm({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
     resolver,
-    defaultValues: actionData?.defaultValues || {
-      email: target || undefined,
-      redirectTo: redirectTo || undefined,
+    defaultValues: {
+      email: target || '',
+      redirectTo: redirectTo || '',
     },
-    errors: actionData?.errors as FieldErrors<FormData>,
   })
 
   return (

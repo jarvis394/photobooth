@@ -4,23 +4,20 @@ import { requireUser } from 'app/server/auth/auth.server'
 import { invariantResponse } from 'app/utils/invariant'
 import { db, files, folders, projects, eq, covers } from '@valley/db'
 import { FolderService } from 'app/server/services/folder.server'
-import { Route } from './+types/$id.delete'
+import { Route } from './+types/$folderId.delete'
 import { FileService } from 'app/server/services/file.server'
 
 export const loader = () => redirect('/projects')
 
 export const action = async ({ request, params }: Route.ActionArgs) => {
   const user = await requireUser(request)
-  const { id, projectId } = params
+  const { folderId, projectId } = params
   const url = new URL(request.url)
   const redirectTo = url.searchParams.get(redirectToKey)
 
-  invariantResponse(id, 'No folder ID found in params')
-  invariantResponse(projectId, 'No project ID found in params')
-
   try {
     const { coverFile, folder, project } = await FolderService.getWithProject({
-      folderId: id,
+      folderId,
       projectId,
       userId: user.id,
     })
@@ -53,7 +50,7 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
         })
         .where(eq(projects.id, folder.projectId))
       const deleteCoverPromise =
-        coverFile?.folderId === id &&
+        coverFile?.folderId === folderId &&
         tx.delete(covers).where(eq(covers.projectId, folder.projectId))
 
       await Promise.all(

@@ -19,17 +19,17 @@ const PROJECT_SETTINGS_TABS = [
   { label: 'Protection', to: '/protection' },
 ]
 
-export const ProjectEditSchema: z.ZodType<
-  Partial<
-    Pick<
-      NewProject,
-      'title' | 'slug' | 'dateShot' | 'storedUntil' | 'language' | 'protected'
-    > & {
-      password?: string | null
-    }
-  >
-> = z
-  .object({
+type ProjectEditDto = Partial<
+  Pick<
+    NewProject,
+    'title' | 'slug' | 'dateShot' | 'storedUntil' | 'language' | 'protected'
+  > & {
+    password?: string | null
+  }
+>
+
+export const ProjectEditSchema = (
+  z.object({
     title: z.string(),
     slug: z.string(),
     dateShot: z.date(),
@@ -37,11 +37,10 @@ export const ProjectEditSchema: z.ZodType<
     language: z.string(),
     protected: z.boolean(),
     password: z.string().or(z.null()),
-  })
-  .partial()
+  }) satisfies z.ZodType<ProjectEditDto>
+).partial()
 
 const resolver = zodResolver(ProjectEditSchema)
-type FormData = z.infer<typeof ProjectEditSchema>
 
 export const action = async ({ request, params }: Route.ActionArgs) => {
   const user = await requireUser(request)
@@ -50,7 +49,7 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
     errors,
     data: submissionData,
     receivedValues: defaultValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
   if (errors) {
     return data(
       { ok: false, errors, defaultValues },

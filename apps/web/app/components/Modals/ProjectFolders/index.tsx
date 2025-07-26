@@ -36,7 +36,7 @@ import cx from 'classnames'
 import styles from './ProjectFoldersModal.module.css'
 import { createPortal } from 'react-dom'
 import { ClientOnly } from 'remix-utils/client-only'
-import { useProject } from 'app/utils/project'
+import { useProject } from 'app/utils/queries/project'
 import { useProjectsStore } from 'app/stores/projects'
 
 const ModalContent: React.FC<{
@@ -209,8 +209,9 @@ const ModalContent: React.FC<{
 const ProjectFoldersModal: React.FC<{ onClose?: () => void }> = ({
   onClose,
 }) => {
-  const project = useProject()
-  const createFolderAction = '/api/projects/' + project.id + '/folders/create'
+  const { data } = useProject()
+  const project = data?.project
+  const createFolderAction = '/api/projects/' + project?.id + '/folders/create'
   const createFolderFetcher = useFetcher({ key: createFolderAction })
 
   return (

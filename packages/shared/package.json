@@ -38,19 +38,18 @@
     }
   },
   "devDependencies": {
-    "@swc/cli": "^0.6.0",
-    "@swc/core": "^1.11.11",
-    "@swc/helpers": "^0.5.15",
-    "@types/node": "^20.3.1",
+    "@swc/cli": "^0.7.8",
+    "@swc/core": "^1.13.1",
+    "@swc/helpers": "^0.5.17",
+    "@types/node": "^24.0.15",
     "@valley/db": "*",
     "@valley/eslint-config": "*",
     "@valley/typescript-config": "*",
     "classnames": "^2.5.1",
     "eslint": "^8.56.11",
-    "tailwind-merge": "^3.0.2",
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "tailwind-merge": "^3.0.2"
+    "tailwind-merge": "^3.3.1"
   }
 }

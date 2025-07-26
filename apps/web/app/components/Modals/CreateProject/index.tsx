@@ -3,7 +3,6 @@ import Button from '@valley/ui/Button'
 import ModalHeader from '@valley/ui/ModalHeader'
 import ModalFooter from '@valley/ui/ModalFooter'
 import { useRemixForm } from 'remix-hook-form'
-import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import TextField from '@valley/ui/TextField'
 import { Form, useFetcher } from 'react-router'
@@ -21,8 +20,6 @@ import { RefreshClockwise } from 'geist-ui-icons'
 import IconButton from '@valley/ui/IconButton'
 import Label from '@valley/ui/Label'
 import AnimateChangeInHeight from '@valley/ui/AnimateChangeInHeight'
-
-type FormData = z.infer<typeof ProjectsCreateSchema>
 
 const resolver = zodResolver(ProjectsCreateSchema)
 
@@ -44,7 +41,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
   const fetcher = useFetcher<typeof createAction>({
     key: 'projects-create',
   })
-  const { register, handleSubmit, setValue } = useRemixForm<FormData>({
+  const { register, handleSubmit, setValue } = useRemixForm({
     resolver,
     submitConfig: {
       action: '/api/projects/create',

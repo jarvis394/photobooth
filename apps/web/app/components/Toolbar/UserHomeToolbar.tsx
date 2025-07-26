@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import styles from './Toolbar.module.css'
 import AnimatedTabs from '../AnimatedTabs/AnimatedTabs'
 import { ToolbarItem } from './ToolbarItem'
 import LinkTabItem from './LinkTabItem'
@@ -35,8 +34,8 @@ const UserHomeToolbar = () => {
   }, [location.pathname])
 
   return (
-    <div className={styles.toolbar}>
-      <AnimatedTabs value={value}>
+    <div className="bg-paper border-alpha-transparent-12 sticky -top-[0.01px] z-10 flex border-b-1">
+      <AnimatedTabs value={value} className="px-2 sm:px-4">
         {userHomeToolbarItems.map((tab, i) => (
           <LinkTabItem key={i} value={tab.value} label={tab.label} />
         ))}

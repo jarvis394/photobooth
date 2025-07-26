@@ -55,7 +55,9 @@ const UserBlock = () => {
   const signOut = async () => {
     setPending(true)
     await authClient.signOut()
-    navigate('/auth/login')
+    navigate('/auth/login', {
+      viewTransition: true,
+    })
   }
 
   if (session.error || session.isPending) return null

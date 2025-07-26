@@ -3,17 +3,10 @@ import styles from './ButtonBase.module.css'
 import { AsChildProps } from '../types/AsChildProps'
 import { Slot } from '@radix-ui/react-slot'
 import { cn } from '@valley/shared'
+import { PaperProps } from '../Paper/Paper'
 
 export type ButtonBaseOwnProps = React.PropsWithChildren<{
-  variant?:
-    | 'primary'
-    | 'secondary'
-    | 'secondary-dimmed'
-    | 'tertiary'
-    | 'tertiary-dimmed'
-    | 'warning'
-    | 'danger'
-    | 'danger-dimmed'
+  variant?: PaperProps['variant']
   disabled?: boolean
   onClick?: React.MouseEventHandler
   shimmer?: boolean

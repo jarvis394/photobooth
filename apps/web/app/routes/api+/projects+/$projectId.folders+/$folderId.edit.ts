@@ -4,8 +4,7 @@ import { db, folders, projects, users, eq, and, sql, exists } from '@valley/db'
 import { requireUser } from 'app/server/auth/auth.server'
 import { getValidatedFormData } from 'remix-hook-form'
 import { z } from 'zod'
-import { invariantResponse } from 'app/utils/invariant'
-import { Route } from './+types/$id.edit'
+import { Route } from './+types/$folderId.edit'
 
 export const PROJECT_FOLDER_TITLE_MAX_LENGTH = 64
 export const PROJECT_FOLDER_DESCRIPTION_MAX_LENGTH = 4096
@@ -26,21 +25,19 @@ export const FoldersEditSchema = z.object({
     .optional(),
 })
 
-type FormData = z.infer<typeof FoldersEditSchema>
-
 const resolver = zodResolver(FoldersEditSchema)
 
 export const loader = () => redirect('/projects')
 
 export const action = async ({ request, params }: Route.ActionArgs) => {
   const user = await requireUser(request)
-  const { id, projectId } = params
+  const { folderId, projectId } = params
 
   const {
     errors,
     data: submissionData,
     receivedValues: defaultValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
   if (errors) {
     return data(
       { ok: false, errors, defaultValues },
@@ -50,16 +47,13 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
     )
   }
 
-  invariantResponse(projectId, 'No project ID found in params')
-  invariantResponse(id, 'No folder ID found in params')
-
   try {
     const [folder] = await db
       .update(folders)
       .set(submissionData)
       .where(
         and(
-          eq(folders.id, id),
+          eq(folders.id, folderId),
           exists(
             db
               .select({ id: sql`TRUE` })
@@ -78,7 +72,7 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
       {
         ok: false,
         errors: {
-          title: `Folder ${id} not found`,
+          title: { message: `Folder ${folderId} not found` },
         },
         defaultValues,
       },

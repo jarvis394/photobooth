@@ -1,9 +1,18 @@
 import { useFormAction, useNavigation, useRouteLoaderData } from 'react-router'
-import type { HTMLFormMethod } from 'react-router'
+import type {
+  HTMLFormMethod,
+  UNSAFE_DataWithResponseInit as DataWithResponseInit,
+} from 'react-router'
 import { loader as rootLoader } from 'app/root'
 import prettyBytes from 'pretty-bytes'
 import { useMemo } from 'react'
 import * as z from 'zod'
+
+export type ClientData<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  T extends (...args: any) => any,
+  R = Awaited<ReturnType<T>>,
+> = R extends Response ? never : R extends DataWithResponseInit<infer U> ? U : T
 
 export const useRootLoaderData = () => {
   const rootContext = useRouteLoaderData<typeof rootLoader>('root')
@@ -149,13 +158,15 @@ export function useIsPending({
 
 /** Optional type that formats `''` to `undefined` for Zod schema */
 export const looseOptional = <T extends z.ZodTypeAny>(schema: T) =>
-  z.preprocess(
-    (value: unknown) =>
-      value === null || (typeof value === 'string' && value === '')
-        ? undefined
-        : value,
-    schema.optional()
-  )
+  z
+    .preprocess(
+      (value: z.infer<T> | undefined) =>
+        value === null || (typeof value === 'string' && value === '')
+          ? undefined
+          : value,
+      schema
+    )
+    .optional()
 
 export const parseCookies = () => {
   return document.cookie
@@ -178,7 +189,12 @@ export const capitalizeFirstLetter = (s: string) => {
   return s[0].toUpperCase() + s.slice(1)
 }
 
-export const enumEntries = <T extends z.EnumLike>(t: T) => {
+type EnumLike = {
+  [k: string]: string | number
+  [nu: number]: string
+}
+
+export const enumEntries = <T extends EnumLike>(t: T) => {
   const entries = Object.entries(t) as unknown as Array<[string, T[keyof T]]>
   const plainStringEnum = entries.every(
     ([_, value]) => typeof value === 'string'
@@ -188,13 +204,11 @@ export const enumEntries = <T extends z.EnumLike>(t: T) => {
     : entries.filter(([_, v]) => typeof v !== 'string')
 }
 
-export const enumKeys = <T extends z.EnumLike>(
-  t: T
-): ReadonlyArray<keyof T> => {
+export const enumKeys = <T extends EnumLike>(t: T): ReadonlyArray<keyof T> => {
   return enumEntries(t).map(([key]) => key)
 }
 
-export const enumValues = <T extends z.EnumLike>(
+export const enumValues = <T extends EnumLike>(
   t: T
 ): ReadonlyArray<T[keyof T]> => {
   const values = Object.values(t) as Array<T[keyof T]>

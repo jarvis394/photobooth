@@ -1,7 +1,7 @@
 import Stack from '@valley/ui/Stack'
 import TextField from '@valley/ui/TextField'
 import Fieldset from 'app/components/Fieldset/Fieldset'
-import { useProject } from 'app/utils/project'
+import { useProject } from 'app/utils/queries/project'
 import React from 'react'
 import { ProjectWithFolders } from '@valley/shared'
 import { ProjectEditSchema, action as rootAction } from './_layout'
@@ -81,9 +81,10 @@ const ProjectSettingsGeneral: React.FC<{
 }
 
 const ProjectSettingsGeneralRoute = () => {
-  const data = useProject()
+  const { data } = useProject()
+  const project = data?.project
 
-  return <ProjectSettingsGeneral project={data} />
+  return <ProjectSettingsGeneral project={project} />
 }
 
 export default ProjectSettingsGeneralRoute

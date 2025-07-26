@@ -9,7 +9,7 @@ import { Form, useParams } from 'react-router'
 import { useIsPending } from 'app/utils/misc'
 import { redirectToKey } from 'app/config/paramsKeys'
 import ErrorModalContent from '../ErrorModalContent'
-import { useFiles } from 'app/utils/files'
+import { useProjectFolderFiles } from 'app/utils/queries/project'
 import { Cover, File } from '@valley/db'
 
 type ConfirmFileDeletionProps = { onClose: () => void }
@@ -25,7 +25,7 @@ const ModalContents: React.FC<
   const file = files?.find((e) => e.id === fileId)
   const redirectTo = `/projects/${projectId}/folder/${folderId}`
   const formAction = `/api/files/${file?.id}/delete?${redirectToKey}=${redirectTo}`
-  const { handleSubmit } = useRemixForm<FormData>({
+  const { handleSubmit } = useRemixForm({
     submitConfig: {
       navigate: true,
       action: formAction,
@@ -93,7 +93,8 @@ const ModalContents: React.FC<
 const ConfirmFileDeletionModal: React.FC<ConfirmFileDeletionProps> = ({
   onClose,
 }) => {
-  const files = useFiles()
+  const { data } = useProjectFolderFiles()
+  const files = data?.files
 
   return <ModalContents onClose={onClose} files={files} />
 }

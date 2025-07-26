@@ -2,6 +2,10 @@
 @import '@valley/tailwind/styles';
 @source '../**/*.tsx';
 
+:root {
+  --pageWidth: 1200px;
+}
+
 .fade {
   --fade-duration: 120ms;
   --fade-timing-function: ease-in-out;

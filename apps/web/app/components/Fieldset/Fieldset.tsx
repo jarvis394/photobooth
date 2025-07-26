@@ -3,16 +3,16 @@ import { Form, SubmitOptions, useLocation } from 'react-router'
 import Stack, { StackProps } from '@valley/ui/Stack'
 import React, { useMemo } from 'react'
 import { useRemixForm, UseRemixFormOptions } from 'remix-hook-form'
-import { z, ZodType } from 'zod'
+import { z } from 'zod'
 import styles from './Fieldset.module.css'
 import Divider from '@valley/ui/Divider'
 import Button, { ButtonProps } from '@valley/ui/Button'
 import { useIsPending } from 'app/utils/misc'
 import cx from 'classnames'
 
-type FieldsetProps<T extends ZodType = ZodType> = {
+type FieldsetProps<T extends z.ZodObject> = {
   submitConfig?: SubmitOptions
-  formConfig?: UseRemixFormOptions<z.infer<T>>
+  formConfig?: UseRemixFormOptions<z.input<T>, unknown, z.output<T>>
   stackProps?: Partial<StackProps>
   before?: React.ReactNode
   after?: React.ReactNode
@@ -24,12 +24,15 @@ type FieldsetProps<T extends ZodType = ZodType> = {
   submitLabel?: React.ReactNode
   submitProps?: Partial<ButtonProps & { asChild: false }>
   children?: (
-    ctx: Omit<ReturnType<typeof useRemixForm<z.infer<T>>>, 'handleSubmit'>
+    ctx: Omit<
+      ReturnType<typeof useRemixForm<z.input<T>, unknown, z.output<T>>>,
+      'handleSubmit'
+    >
   ) => React.ReactNode
   schema: T
 }
 
-const Fieldset = <T extends ZodType>({
+const Fieldset = <T extends z.ZodObject>({
   submitConfig,
   formConfig,
   schema,
@@ -54,7 +57,7 @@ const Fieldset = <T extends ZodType>({
     formAction,
     formMethod: submitConfig?.method,
   })
-  type FormData = z.infer<typeof schema>
+
   const resolver = useMemo(() => zodResolver(schema), [schema])
   const after = useMemo(
     () =>
@@ -73,7 +76,7 @@ const Fieldset = <T extends ZodType>({
       ),
     [propsAfter, submitProps, isPending, id, submitLabel]
   )
-  const { handleSubmit, ...ctx } = useRemixForm<FormData>({
+  const { handleSubmit, ...ctx } = useRemixForm({
     ...formConfig,
     resolver,
     submitConfig: {

@@ -1,26 +1,26 @@
 import React from 'react'
-import styles from './Wrapper.module.css'
-import cx from 'classnames'
 import Paper, { PaperProps } from '../Paper/Paper'
+import { cn } from '@valley/shared'
 
 export type WrapperProps = PaperProps
 
-const Wrapper = React.forwardRef<HTMLDivElement, WrapperProps>(
-  function WrapperWithRef(
-    { children, className, variant = 'tertiary', ...props },
-    ref
-  ) {
-    return (
-      <Paper
-        {...props}
-        ref={ref}
-        variant={variant}
-        className={cx('Wrapper', styles.wrapper, className)}
-      >
-        {children}
-      </Paper>
-    )
-  }
+const Wrapper: React.FC<WrapperProps> = ({
+  children,
+  className,
+  variant = 'tertiary',
+  ...props
+}) => (
+  <Paper
+    {...props}
+    variant={variant}
+    className={cn(
+      'Wrapper',
+      'mx-auto flex w-full max-w-[calc(var(--pageWidth)+2*var(--pagePadding))] px-[var(--pagePadding)] [--pagePadding:calc(var(--spacing)*4)] md:[--pagePadding:calc(var(--spacing)*6)]',
+      className
+    )}
+  >
+    {children}
+  </Paper>
 )
 
 export default Wrapper

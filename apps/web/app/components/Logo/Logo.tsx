@@ -1,9 +1,8 @@
-import React, { CSSProperties, useMemo } from 'react'
-import styles from './Logo.module.css'
-import cx from 'classnames'
+import React, { useEffect, useRef } from 'react'
 import { HEADER_HEIGHT } from '../../config/constants'
 import { map } from '../../utils/misc'
 import { useScrollProgress } from '@valley/ui/useScrollProgress'
+import { cn } from '@valley/shared'
 
 type LogoProps = {
   className?: string
@@ -20,22 +19,23 @@ const Logo: React.FC<LogoProps> = ({
   className,
   ...props
 }) => {
+  const $root = useRef<HTMLDivElement>(null)
   const scrollProgress = useScrollProgress(HEADER_HEIGHT)
   const topOffset = map(scrollProgress, 0, 1, 0, -32 * 0.2)
-  const style = useMemo<CSSProperties>(() => {
-    if (!withScrollAnimation) return {}
-    return {
-      position: 'fixed',
-      transform: [
-        `scale(${map(scrollProgress, 0, 1, 1, 0.8)})`,
-        `translateY(${topOffset}px)`,
-        'translateZ(0)',
-      ].join(' '),
-    }
+
+  useEffect(() => {
+    if (!withScrollAnimation || !$root.current) return
+
+    $root.current.style.position = 'fixed'
+    $root.current.style.transform = [
+      `scale(${map(scrollProgress, 0, 1, 1, 0.8)})`,
+      `translateY(${topOffset}px)`,
+      'translateZ(0)',
+    ].join(' ')
   }, [scrollProgress, topOffset, withScrollAnimation])
 
   return (
-    <div {...props} className={cx(styles.logo, className)} style={style}>
+    <div {...props} ref={$root} className={cn('flex items-center', className)}>
       <svg
         width="32"
         height="32"

@@ -9,7 +9,7 @@ import Note from '@valley/ui/Note'
 import { Form, useParams } from 'react-router'
 import Stack from '@valley/ui/Stack'
 import { useIsPending } from 'app/utils/misc'
-import { useProject } from 'app/utils/project'
+import { useProject } from 'app/utils/queries/project'
 import { ProjectWithFolders } from '@valley/shared'
 import { redirectToKey } from 'app/config/paramsKeys'
 import ErrorModalContent from '../ErrorModalContent'
@@ -32,7 +32,7 @@ const ModalContents: React.FC<
     redirectToFolderId ? `/folder/${redirectToFolderId}` : ''
   }`
   const formAction = `/api/projects/${projectId}/folders/${folder?.id}/clear?${redirectToKey}=${redirectTo}`
-  const { handleSubmit } = useRemixForm<FormData>({
+  const { handleSubmit } = useRemixForm({
     submitConfig: { navigate: true, action: formAction, method: 'POST' },
   })
   const isFolderWithFiles = folder?.totalFiles !== 0
@@ -143,7 +143,8 @@ const ModalContents: React.FC<
 const ConfirmFolderClearModal: React.FC<ConfirmFolderClearProps> = ({
   onClose,
 }) => {
-  const project = useProject()
+  const { data } = useProject()
+  const project = data?.project
 
   return <ModalContents onClose={onClose} project={project} />
 }

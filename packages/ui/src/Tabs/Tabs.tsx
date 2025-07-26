@@ -13,6 +13,7 @@ import styles from './Tabs.module.css'
 import { TabsItemProps } from '../TabsItem/TabsItem'
 import { useScrollProgress } from '../useScrollProgress/useScrollProgress'
 import cx from 'classnames'
+import { mergeRefs } from 'react-merge-refs'
 
 const HOVER_CONTAINER_PADDING = 8
 const ANIMATION_DURATION = 150
@@ -34,8 +35,8 @@ type BaseTabsProps<T extends TabValue> = {
   children:
     | React.ReactElement<TabsItemProps>
     | Array<React.ReactElement<TabsItemProps>>
-  className?: string
   scrollProgressOffset?: number
+  onScrollProgressChange?: (progress: number) => void
   scrollProgressTransitionStyles?: (progress: number) => CSSProperties
 }
 
@@ -50,15 +51,18 @@ type ValueProps<T extends TabValue> =
     }
 
 export type TabsProps<T extends TabValue = TabValue> = BaseTabsProps<T> &
-  ValueProps<T>
+  ValueProps<T> &
+  React.ComponentProps<'div'>
 
 const Tabs = <T extends TabValue = TabValue>({
   onItemClick,
   children: childrenProp,
+  ref,
   value: propsValue,
   defaultValue,
   indicator,
   className,
+  onScrollProgressChange,
   scrollProgressTransitionStyles,
   ...props
 }: TabsProps<T>): JSX.Element => {
@@ -214,12 +218,16 @@ const Tabs = <T extends TabValue = TabValue>({
 
   useEffect(() => {
     tabsRefs.current = new Map()
-  }, [children.length])
+  }, [children?.length])
+
+  useEffect(() => {
+    onScrollProgressChange?.(scrollProgress)
+  }, [scrollProgress, onScrollProgressChange])
 
   return (
     <div
       onPointerLeave={onLeaveTabs}
-      ref={$root}
+      ref={mergeRefs([$root, ref])}
       className={cx(styles.tabs, className)}
       style={scrollProgressStyles}
     >

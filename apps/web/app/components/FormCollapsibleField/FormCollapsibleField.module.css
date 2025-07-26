@@ -12,7 +12,7 @@
 }
 
 .formCollapsibleField[data-state='expanded'] {
-  box-shadow: 0 0 0 1px inset var(--alpha-transparent-07);
+  box-shadow: 0 0 0 1px inset var(--alpha-transparent-12);
   background-color: var(--background-default);
 }
 

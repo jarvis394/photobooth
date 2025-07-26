@@ -17,6 +17,7 @@
 .project__uploadHint {
   color: var(--text-hint);
   font-size: 14px;
+  line-height: 20px;
   font-weight: 400;
   user-select: none;
 }
