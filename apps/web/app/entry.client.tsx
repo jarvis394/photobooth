@@ -1,9 +1,17 @@
-import { HydratedRouter } from 'react-router/dom'
 import { startTransition } from 'react'
 import { hydrateRoot } from 'react-dom/client'
+import { HydratedRouter } from 'react-router/dom'
 
-// https://remix.run/file-conventions/entry.client
-// Hydrate Remix app on a client manually
-startTransition(() => {
-  hydrateRoot(document, <HydratedRouter />)
-})
+async function hydrate() {
+  startTransition(() => {
+    hydrateRoot(document, <HydratedRouter />)
+  })
+}
+
+if (window.requestIdleCallback) {
+  window.requestIdleCallback(hydrate)
+} else {
+  // Safari doesn't support requestIdleCallback
+  // https://caniuse.com/requestidlecallback
+  window.setTimeout(hydrate, 1)
+}

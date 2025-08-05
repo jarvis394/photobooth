@@ -12,26 +12,27 @@ import { Plus } from 'geist-ui-icons'
 import { useNavigate, useFetcher, Form, useParams } from 'react-router'
 import { useRemixForm } from 'remix-hook-form'
 import styles from './project.module.css'
-import { useProject } from 'app/utils/project'
+import { useProject } from 'app/utils/queries/project'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FoldersCreateSchema } from 'app/routes/api+/projects+/$projectId.folders+/create'
-import { z } from 'zod'
 import cx from 'classnames'
 import React, { useCallback } from 'react'
+import { Route } from './+types'
 
-type FormData = z.infer<typeof FoldersCreateSchema>
 const resolver = zodResolver(FoldersCreateSchema)
 
 const ProjectFolders: React.FC = () => {
   const navigate = useNavigate()
   const { openModal } = useModal()
-  const { folderId } = useParams()
-  const project = useProject()
+  const { projectId = '', folderId = '' } =
+    useParams<Route.ComponentProps['params']>()
+  const { data: projectData } = useProject({ projectId })
+  const project = projectData?.project
   const currentFolder = project?.folders?.find((e) => e.id === folderId)
   const createFolderAction = '/api/projects/' + project?.id + '/folders/create'
   const projectTotalSize = formatBytes(Number(project?.totalSize || '0'))
   const createFolderFetcher = useFetcher({ key: createFolderAction })
-  const { register, handleSubmit } = useRemixForm<FormData>({
+  const { register, handleSubmit } = useRemixForm({
     resolver,
     fetcher: createFolderFetcher,
     submitConfig: {

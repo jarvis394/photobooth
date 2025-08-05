@@ -34,19 +34,13 @@ export const UserSetPasswordSchema = z
     password: PasswordSchema,
     confirmPassword: PasswordSchema,
     currentPassword: PasswordSchema.optional(),
-    revokeOtherSessions: z.boolean().optional().default(false),
+    revokeOtherSessions: z.boolean().default(false).optional(),
   })
-  .superRefine(({ confirmPassword, password }, ctx) => {
-    if (confirmPassword !== password) {
-      ctx.addIssue({
-        code: 'custom',
-        message: 'The passwords did not match',
-        path: ['confirmPassword'],
-      })
-    }
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'The passwords did not match',
+    path: ['confirmPassword'],
   })
 
-export type FormData = z.infer<typeof UserSetPasswordSchema>
 export const resolver = zodResolver(UserSetPasswordSchema)
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -97,7 +91,7 @@ const Accounts: React.FC<{
 
 const AddNewAccount = () => (
   <Stack asChild gap={3} direction={'column'} padding={4}>
-    <Paper variant="border" rounded>
+    <Paper outlined rounded>
       <h3
         style={{
           fontSize: 16,

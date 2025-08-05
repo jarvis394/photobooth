@@ -1,8 +1,6 @@
 import React from 'react'
-import styles from './PageHeader.module.css'
 import Wrapper, { WrapperProps } from '@valley/ui/Wrapper'
-import cx from 'classnames'
-import Stack from '@valley/ui/Stack'
+import { cn } from '@valley/shared'
 
 type PageHeaderProps = WrapperProps & {
   before?: React.ReactElement
@@ -21,34 +19,29 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   const { className: headerClassName, ...restHeaderProps } = headerProps || {}
 
   return (
-    <Stack
+    <Wrapper
       {...props}
-      asChild
-      gap={4}
-      direction={{ md: 'column', lg: 'row' }}
-      className={cx(styles.pageHeader, className)}
+      className={cn(
+        'flex min-h-30 shrink-0 flex-col gap-4 py-10 lg:flex-row',
+        className
+      )}
     >
-      <Wrapper>
-        <h1
-          {...restHeaderProps}
-          className={cx(styles.pageHeader__title, headerClassName)}
-        >
-          {children}
-        </h1>
-        {before && (
-          <Stack
-            gap={3}
-            direction={{ sm: 'row-reverse', md: 'row-reverse', lg: 'row' }}
-            justify={{ sm: 'flex-end', md: 'flex-end', lg: 'flex-start' }}
-            align={'center'}
-            flex={0}
-          >
-            {before}
-          </Stack>
+      <h1
+        {...restHeaderProps}
+        className={cn(
+          'heading-32 flex grow items-center font-medium',
+          headerClassName
         )}
-        {after}
-      </Wrapper>
-    </Stack>
+      >
+        {children}
+      </h1>
+      {before && (
+        <div className="flex flex-0 flex-row-reverse items-center justify-end gap-3 lg:flex-row lg:justify-start">
+          {before}
+        </div>
+      )}
+      {after}
+    </Wrapper>
   )
 }
 

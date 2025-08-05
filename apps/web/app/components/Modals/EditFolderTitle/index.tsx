@@ -1,19 +1,14 @@
 import React from 'react'
 import Button from '@valley/ui/Button'
-import ModalHeader from '@valley/ui/ModalHeader'
-import ModalFooter from '@valley/ui/ModalFooter'
-import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import TextField from '@valley/ui/TextField'
 import { Form, useParams } from 'react-router'
-import { FoldersEditSchema } from 'app/routes/api+/projects+/$projectId.folders+/$id.edit'
+import { FoldersEditSchema } from 'app/routes/api+/projects+/$projectId.folders+/$folderId.edit'
 import { useRemixForm } from 'remix-hook-form'
 import { useIsPending } from 'app/utils/misc'
-import { useProject } from 'app/utils/project'
+import { useProject } from 'app/utils/queries/project'
 import { ProjectWithFolders } from '@valley/shared'
-import ModalContent from '@valley/ui/ModalContent'
-
-type FormData = z.infer<typeof FoldersEditSchema>
+import { Modal } from '@valley/ui/Modal'
 
 const resolver = zodResolver(FoldersEditSchema)
 
@@ -30,11 +25,10 @@ const ModalContents: React.FC<
   const defaultTitle = currentFolder?.title
   const formAction =
     '/api/projects/' + projectId + '/folders/' + folderId + '/edit'
-  const { register, getFieldState, formState, handleSubmit } =
-    useRemixForm<FormData>({
-      resolver,
-      submitConfig: { action: formAction, method: 'POST' },
-    })
+  const { register, getFieldState, formState, handleSubmit } = useRemixForm({
+    resolver,
+    submitConfig: { action: formAction, method: 'POST' },
+  })
   const isPending = useIsPending({
     formMethod: 'POST',
     formAction,
@@ -42,27 +36,29 @@ const ModalContents: React.FC<
 
   return (
     <>
-      <ModalHeader>Edit Folder Title</ModalHeader>
-      <ModalContent asChild>
-        <Form
-          onSubmit={handleSubmit}
-          id="edit-folder-title-form"
-          action={formAction}
-          method="POST"
-        >
-          <TextField
-            {...register('title', { required: true })}
-            defaultValue={defaultTitle}
-            fieldState={getFieldState('title', formState)}
-            label="Title"
-            required
-            size="lg"
-            id="folder-title-input"
-            placeholder="Folder"
+      <Modal.Title>Edit Folder Title</Modal.Title>
+      <Modal.Content
+        render={
+          <Form
+            onSubmit={handleSubmit}
+            id="edit-folder-title-form"
+            action={formAction}
+            method="POST"
           />
-        </Form>
-      </ModalContent>
-      <ModalFooter
+        }
+      >
+        <TextField
+          {...register('title', { required: true })}
+          defaultValue={defaultTitle}
+          fieldState={getFieldState('title', formState)}
+          label="Title"
+          required
+          size="lg"
+          id="folder-title-input"
+          placeholder="Folder"
+        />
+      </Modal.Content>
+      <Modal.Footer
         before={
           <Button
             onClick={onClose}
@@ -93,7 +89,8 @@ const ModalContents: React.FC<
 const EditFolderTitleModal: React.FC<EditFolderTitleModalProps> = ({
   onClose,
 }) => {
-  const project = useProject()
+  const { data } = useProject()
+  const project = data?.project
 
   return <ModalContents onClose={onClose} project={project} />
 }

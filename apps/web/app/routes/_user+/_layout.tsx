@@ -5,7 +5,6 @@ import {
   ShouldRevalidateFunction,
   useAsyncError,
   useLoaderData,
-  useNavigate,
   useSubmit,
 } from 'react-router'
 import styles from './styles.module.css'
@@ -14,10 +13,10 @@ import Header from '../../components/Header/Header'
 import { requireUserId } from '../../server/auth/auth.server'
 import { UserFull } from '@valley/shared'
 import { useUserStore } from 'app/utils/user'
-import Stack from '@valley/ui/Stack'
 import Spinner from '@valley/ui/Spinner'
 import { db, users, eq } from '@valley/db'
 import { Route } from './+types/_layout'
+import { GeneralErrorBoundary } from 'app/components/ErrorBoundary'
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const userId = await requireUserId(request)
@@ -77,38 +76,31 @@ const UserGroupLayout: React.FC = () => {
  */
 export const ErrorBoundary: React.FC<Route.ErrorBoundaryProps> = () => {
   const submit = useSubmit()
-  const navigate = useNavigate()
   const error = useAsyncError()
 
   useEffect(() => {
-    if (!error) {
-      navigate('/home')
-      return
+    if (error) {
+      submit(
+        {},
+        {
+          action: '/auth/logout',
+          method: 'POST',
+          viewTransition: true,
+        }
+      )
     }
+  }, [error, submit])
 
-    submit(
-      {},
-      {
-        action: '/auth/logout',
-        method: 'POST',
-        viewTransition: true,
-      }
+  if (error) {
+    return (
+      <div className="flex size-full flex-col items-center justify-center gap-4">
+        <h1 className="heading-24 font-medium">Logging out...</h1>
+        <Spinner style={{ ['--spinner-size' as string]: '32px' }} />
+      </div>
     )
-  }, [error, navigate, submit])
-
-  return (
-    <Stack
-      fullWidth
-      fullHeight
-      gap={2}
-      direction={'column'}
-      align={'center'}
-      justify={'center'}
-    >
-      <h1>Logging out...</h1>
-      <Spinner style={{ ['--spinner-size' as string]: '32px' }} />
-    </Stack>
-  )
+  } else {
+    return <GeneralErrorBoundary />
+  }
 }
 
 export default UserGroupLayout

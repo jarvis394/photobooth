@@ -83,6 +83,7 @@ const OnboardingLanguageSelectRoute: React.FC<Route.ComponentProps> = () => {
               type="submit"
               after={<ChevronRight />}
               disabled={isPending && selectedInterfaceLanguage === language}
+              shimmer={isPending && selectedInterfaceLanguage === language}
             >
               {INTERFACE_LANGUAGES_NAMES[language]}
             </Button>

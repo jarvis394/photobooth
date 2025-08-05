@@ -1,16 +1,11 @@
-import { redirect, data, Link, ShouldRevalidateFunction } from 'react-router'
+import { Link } from 'react-router'
 import Button from '@valley/ui/Button'
-import Stack from '@valley/ui/Stack'
 import Wrapper from '@valley/ui/Wrapper'
 import React from 'react'
 import styles from './projects.module.css'
 import ProjectCard from 'app/components/ProjectCard/ProjectCard'
 import { GeneralErrorBoundary } from 'app/components/ErrorBoundary'
-import {
-  combineServerTimings,
-  makeTimings,
-  time,
-} from 'app/server/timing.server'
+import { combineServerTimings } from 'app/server/timing.server'
 import Input from '@valley/ui/Input'
 import {
   ChevronDown,
@@ -21,37 +16,19 @@ import {
 } from 'geist-ui-icons'
 import CreateProjectButton from 'app/components/BannerBlocks/CreateProjectButton'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react'
-import { ProjectWithFolders } from '@valley/shared'
-import { cache, createClientLoaderCache, useCachedData } from 'app/utils/cache'
+import { cn, ProjectWithFolders } from '@valley/shared'
 import Menu from '@valley/ui/Menu'
-import { ProjectService } from 'app/server/services/project.server'
 import { useHydrated } from 'remix-utils/use-hydrated'
-import { auth } from '@valley/auth'
 import { Route } from './+types/_index'
+import { useProjects, projectsQuery } from 'app/utils/queries/projects'
+import { loader as projectsLoader } from 'app/routes/api+/projects+/_index'
+import { getQueryClient } from 'app/utils/query-client'
+import { ProjectsLoaderData } from 'app/api/projects'
 
-export const getProjectsCacheKey = () => 'projects'
+export const loader = projectsLoader
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  const session = await auth.api.getSession({ headers: request.headers })
-  const timings = makeTimings('projects loader')
-
-  if (!session) {
-    return redirect('/auth/login')
-  }
-
-  const projects = await time(
-    ProjectService.getUserProjects({ userId: session.user.id }),
-    {
-      timings,
-      type: 'find projects',
-    }
-  )
-
-  return data(
-    { projects },
-    { headers: { 'Server-Timing': timings.toString() } }
-  )
-}
+export const clientLoader = () =>
+  getQueryClient().getQueryData<ProjectsLoaderData>(projectsQuery.queryKey)
 
 export const headers = ({
   loaderHeaders,
@@ -62,27 +39,32 @@ export const headers = ({
   }
 }
 
-export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
-  if (formAction) {
-    cache.removeItem(getProjectsCacheKey())
-    return true
-  }
+const projectsListClasses = cn(
+  'grid! lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 py-4 w-full'
+)
 
-  return false
-}
-
-export const clientLoader = createClientLoaderCache<Route.ClientLoaderArgs>({
-  key: getProjectsCacheKey(),
-  type: 'swr',
-})
-
-const projectSkeletons = (
-  <div className={styles.projects__placeholderIllustration}>
-    <Wrapper className={styles.projects__list}>
-      {new Array(8).fill(null).map((_, i) => (
-        <ProjectCard loading key={i} />
-      ))}
-    </Wrapper>
+const ProjectsSkeleton: React.FC<
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+> = ({ className, ...props }) => (
+  <div
+    {...props}
+    className={cn(
+      'pointer-events-none relative z-0 size-full overflow-hidden select-none',
+      className
+    )}
+  >
+    <div className="absolute size-full">
+      <Wrapper
+        className={cn(
+          projectsListClasses,
+          'absolute inset-0 h-fit mask-b-from-0% mask-b-to-100%'
+        )}
+      >
+        {new Array(6).fill(null).map((_, i) => (
+          <ProjectCard loading key={i} />
+        ))}
+      </Wrapper>
+    </div>
   </div>
 )
 
@@ -93,58 +75,43 @@ const ProjectsList: React.FC<{ projects?: ProjectWithFolders[] }> = ({
 
   if (projects?.length === 0) {
     return (
-      <Stack
-        fullHeight
-        fullWidth
-        direction={'column'}
-        gap={6}
-        align={'center'}
-        justify={'center'}
-        className={styles.projects__placeholder}
-        padding={8}
-      >
+      <div className="relative isolate flex size-full flex-col items-center justify-center p-8">
         {isHydrated && (
-          <Stack
-            className="fade-in"
-            direction={'column'}
-            gap={4}
-            align={'center'}
-            justify={'center'}
-          >
-            <h1>This page seems empty</h1>
-            <p>Upload some photos to make it happier</p>
-          </Stack>
+          <div className="fade-in z-10 flex flex-col items-center justify-center">
+            <h1 className="heading-24 mb-4 text-center">
+              This page seems empty
+            </h1>
+            <p className="mb-6 text-center text-base">
+              Upload some photos to make it happier
+            </p>
+            <Button asChild variant="primary" size="lg" before={<Plus />}>
+              <Link preventScrollReset to={{ search: 'modal=create-project' }}>
+                Create project
+              </Link>
+            </Button>
+          </div>
         )}
-        {isHydrated && (
-          <Button
-            asChild
-            className="fade-in"
-            variant="primary"
-            size="lg"
-            before={<Plus />}
-          >
-            <Link preventScrollReset to={{ search: 'modal=create-project' }}>
-              Create project
-            </Link>
-          </Button>
-        )}
-        {projectSkeletons}
-      </Stack>
+        <ProjectsSkeleton className="absolute" />
+      </div>
     )
   }
 
   return (
-    <Wrapper className={styles.projects__list}>
-      {projects?.map((project, i) => <ProjectCard project={project} key={i} />)}
+    <Wrapper className={projectsListClasses}>
+      {projects?.map((project, i) => (
+        <ProjectCard project={project} key={i} />
+      ))}
     </Wrapper>
   )
 }
 
 const ProjectsRoute: React.FC<Route.ComponentProps> = ({ loaderData }) => {
-  const data = useCachedData({ data: loaderData })
+  const { data, isPending, isSuccess } = useProjects({
+    initialData: () => loaderData,
+  })
 
   return (
-    <Stack direction={'column'} fullHeight fullWidth>
+    <div className="flex size-full flex-col">
       <Wrapper asChild className={styles.projects__bannerBlocks}>
         <OverlayScrollbarsComponent
           defer
@@ -157,61 +124,48 @@ const ProjectsRoute: React.FC<Route.ComponentProps> = ({ loaderData }) => {
           <CreateProjectButton />
         </OverlayScrollbarsComponent>
       </Wrapper>
-      <Wrapper className={styles.projects__searchBar} asChild>
-        <Stack gap={3}>
-          <Input
-            placeholder="Search projects..."
-            paperProps={{ className: styles.projects__searchInput }}
-            before={<MagnifyingGlass color="var(--text-hint)" />}
-          />
-          <Menu.Root>
-            <Menu.Trigger asChild>
-              <Button
-                size="md"
-                variant="secondary-dimmed"
-                before={<SortAscending />}
-                after={<ChevronDown />}
-              >
-                Sort by name
-              </Button>
-            </Menu.Trigger>
-            <Menu.Content>
-              <Menu.Item
-                after={<SortAscending color="var(--text-secondary)" />}
-              >
-                Sort by name
-              </Menu.Item>
-              <Menu.Item
-                after={<SortDescending color="var(--text-secondary)" />}
-              >
-                Sort by name
-              </Menu.Item>
-              <Menu.Item
-                after={<SortAscending color="var(--text-secondary)" />}
-              >
-                Sort by date updated
-              </Menu.Item>
-              <Menu.Item
-                after={<SortDescending color="var(--text-secondary)" />}
-              >
-                Sort by date updated
-              </Menu.Item>
-              <Menu.Item
-                after={<SortAscending color="var(--text-secondary)" />}
-              >
-                Sort by date shot
-              </Menu.Item>
-              <Menu.Item
-                after={<SortDescending color="var(--text-secondary)" />}
-              >
-                Sort by date shot
-              </Menu.Item>
-            </Menu.Content>
-          </Menu.Root>
-        </Stack>
+      <Wrapper className="flex gap-3 pt-4">
+        <Input
+          placeholder="Search projects..."
+          paperProps={{ className: styles.projects__searchInput }}
+          before={<MagnifyingGlass color="var(--text-hint)" />}
+        />
+        <Menu.Root>
+          <Menu.Trigger asChild>
+            <Button
+              size="md"
+              variant="secondary-dimmed"
+              before={<SortAscending />}
+              after={<ChevronDown />}
+            >
+              Sort by name
+            </Button>
+          </Menu.Trigger>
+          <Menu.Content>
+            <Menu.Item after={<SortAscending color="var(--text-secondary)" />}>
+              Sort by name
+            </Menu.Item>
+            <Menu.Item after={<SortDescending color="var(--text-secondary)" />}>
+              Sort by name
+            </Menu.Item>
+            <Menu.Item after={<SortAscending color="var(--text-secondary)" />}>
+              Sort by date updated
+            </Menu.Item>
+            <Menu.Item after={<SortDescending color="var(--text-secondary)" />}>
+              Sort by date updated
+            </Menu.Item>
+            <Menu.Item after={<SortAscending color="var(--text-secondary)" />}>
+              Sort by date shot
+            </Menu.Item>
+            <Menu.Item after={<SortDescending color="var(--text-secondary)" />}>
+              Sort by date shot
+            </Menu.Item>
+          </Menu.Content>
+        </Menu.Root>
       </Wrapper>
-      <ProjectsList projects={data.projects} />
-    </Stack>
+      {isPending && <ProjectsSkeleton />}
+      {isSuccess && <ProjectsList projects={data.projects} />}
+    </div>
   )
 }
 

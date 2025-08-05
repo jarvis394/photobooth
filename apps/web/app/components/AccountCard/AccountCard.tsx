@@ -1,4 +1,3 @@
-import Paper from '@valley/ui/Paper'
 import Stack from '@valley/ui/Stack'
 import {
   PROVIDER_ICONS,
@@ -14,11 +13,12 @@ import IconButton from '@valley/ui/IconButton'
 import { MoreHorizontal } from 'geist-ui-icons'
 import { lowerFirstLetter } from 'app/utils/misc'
 import Hidden from '@valley/ui/Hidden'
-import Modal from '@valley/ui/Modal'
+import { Modal } from '@valley/ui/Modal'
 import ConfirmConnectionDeleteModal from '../Modals/ConfirmConnectionDelete'
 import { Await } from 'react-router'
 import dayjs from 'dayjs'
 import { useHydrated } from 'remix-utils/use-hydrated'
+import { cn } from '@valley/shared'
 
 type AccountCardProps = {
   data: AccountData
@@ -48,7 +48,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ data, canDelete }) => {
 
   return (
     <Stack asChild align={'center'} gap={4} padding={[3, 4]} direction={'row'}>
-      <Paper className={styles.accountCard} variant="secondary">
+      <div className={cn(styles.accountCard, 'bg-paper')}>
         {icon}
         <Stack direction={'column'} flex={'1 1'}>
           {label}
@@ -109,7 +109,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ data, canDelete }) => {
             </Suspense>
           </Menu.Content>
         </Menu.Root>
-        <Modal
+        <Modal.Root
           isOpen={isDeletionModalOpen}
           onDismiss={handleDeletionModalClose}
         >
@@ -117,8 +117,8 @@ const AccountCard: React.FC<AccountCardProps> = ({ data, canDelete }) => {
             data={data}
             onClose={handleDeletionModalClose}
           />
-        </Modal>
-      </Paper>
+        </Modal.Root>
+      </div>
     </Stack>
   )
 }

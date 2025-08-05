@@ -3,18 +3,20 @@ import Stack from '@valley/ui/Stack'
 import React, { useState } from 'react'
 import styles from './security.module.css'
 import { RemixFormProvider, useRemixForm } from 'remix-hook-form'
-import { Form, useActionData } from 'react-router'
+import { Form } from 'react-router'
 import { CREDENTIAL_PROVIDER_NAME } from 'app/config/connections'
-import { FieldErrors } from 'react-hook-form'
 import Animated from '@valley/ui/Animated'
 import Button from '@valley/ui/Button'
 import PasswordField from 'app/components/PasswordField/PasswordField'
 import { passwordMinLengthError } from 'app/utils/user-validation'
 import { useIsPending } from 'app/utils/misc'
-import { FormData, resolver, AccountData } from '.'
+import { resolver, AccountData, UserSetPasswordSchema } from '.'
+import z from 'zod'
 
 type FormComponentProps = {
-  methods: ReturnType<typeof useRemixForm<FormData>>
+  methods: ReturnType<
+    typeof useRemixForm<z.input<typeof UserSetPasswordSchema>>
+  >
   onClose: (e: React.MouseEvent) => void
 }
 
@@ -34,7 +36,11 @@ const UpdatePasswordForm: React.FC<FormComponentProps> = ({
       className={styles.security__form}
       asChild
     >
-      <Form method="POST" onSubmit={methods.handleSubmit}>
+      <Form
+        method="POST"
+        id="update-password-form"
+        onSubmit={methods.handleSubmit}
+      >
         <h3 className={styles.security__formTitle}>Update password</h3>
         <PasswordField
           {...methods.register('currentPassword')}
@@ -58,6 +64,7 @@ const UpdatePasswordForm: React.FC<FormComponentProps> = ({
         <PasswordField
           {...methods.register('confirmPassword')}
           label={'Confirm password'}
+          autoComplete="new-password"
           id="confirm-password"
           fieldState={methods.getFieldState(
             'confirmPassword',
@@ -105,6 +112,7 @@ const SetPasswordForm: React.FC<FormComponentProps> = ({
           id="password"
           label={'New password'}
           helperText={passwordMinLengthError}
+          autoComplete="new-password"
           validHelperText="Your password meets all requirements"
           fieldState={methods.getFieldState('password', methods.formState)}
         />
@@ -112,6 +120,7 @@ const SetPasswordForm: React.FC<FormComponentProps> = ({
           {...methods.register('confirmPassword')}
           label={'Confirm password'}
           id="confirm-password"
+          autoComplete="new-password"
           fieldState={methods.getFieldState(
             'confirmPassword',
             methods.formState
@@ -139,18 +148,11 @@ const Password: React.FC<{ data: AccountData[] }> = ({ data }) => {
   const credentialsAccount = data.find(
     (e) => e.provider === CREDENTIAL_PROVIDER_NAME
   )
-  const actionData = useActionData<{
-    ok: boolean
-    defaultValues?: FormData
-    errors?: FieldErrors<FormData>
-  }>()
   const [isFormShown, setFormShown] = useState(false)
-  const methods = useRemixForm<FormData>({
+  const methods = useRemixForm({
     mode: 'all',
     reValidateMode: 'onChange',
     resolver,
-    defaultValues: actionData?.defaultValues,
-    errors: actionData?.errors as FieldErrors<FormData>,
   })
 
   const showForm = (e: React.MouseEvent) => {

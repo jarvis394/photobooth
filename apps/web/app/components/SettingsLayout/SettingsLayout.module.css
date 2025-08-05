@@ -22,11 +22,18 @@
 
 .settings__tab {
   font-weight: 400 !important;
+}
+
+.settings__tab > span {
   opacity: 0.63;
+  transition: all 150ms ease;
 }
 
 .settings__tab--active {
   font-weight: 600 !important;
+}
+
+.settings__tab--active > span {
   opacity: 1;
 }
 

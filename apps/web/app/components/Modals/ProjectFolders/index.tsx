@@ -20,9 +20,7 @@ import { FetcherWithComponents, useFetcher, useNavigate } from 'react-router'
 import type { Folder } from '@valley/db'
 import { ProjectWithFolders, PROJECT_MAX_FOLDERS } from '@valley/shared'
 import Button from '@valley/ui/Button'
-import Stack from '@valley/ui/Stack'
-import ModalFooter from '@valley/ui/ModalFooter'
-import ModalHeader from '@valley/ui/ModalHeader'
+import { Modal } from '@valley/ui/Modal'
 import FolderListItem from 'app/components/FolderListItem/FolderListItem'
 import { Plus, Pencil } from 'geist-ui-icons'
 import React, {
@@ -33,10 +31,9 @@ import React, {
   useCallback,
 } from 'react'
 import cx from 'classnames'
-import styles from './ProjectFoldersModal.module.css'
 import { createPortal } from 'react-dom'
 import { ClientOnly } from 'remix-utils/client-only'
-import { useProject } from 'app/utils/project'
+import { useProject } from 'app/utils/queries/project'
 import { useProjectsStore } from 'app/stores/projects'
 
 const ModalContent: React.FC<{
@@ -109,99 +106,96 @@ const ModalContent: React.FC<{
 
   return (
     <>
-      <ModalHeader style={{ paddingTop: 24, paddingBottom: 12 }}>
-        <Stack fullWidth align={'center'} justify={'space-between'}>
-          Folders
-          <Stack gap={2}>
-            <Button
-              disabled={isCreatingFolder}
-              loading={isCreatingFolder}
-              variant="secondary"
-              size="md"
-              type="submit"
-              form="create-project-folder"
-              className="fade"
-              data-fade-in={canCreateMoreFolders}
-              before={<Plus />}
-            >
-              Create
-            </Button>
-            <Button
-              onClick={handleEdit}
-              variant={isEditing ? 'secondary' : 'primary'}
-              before={isEditing ? null : <Pencil />}
-              size="md"
-            >
-              {isEditing && 'Done'}
-              {!isEditing && 'Edit'}
-            </Button>
-          </Stack>
-        </Stack>
-      </ModalHeader>
-      <Stack
-        className={styles.project__foldersModalStack}
-        gap={1}
-        direction={'column'}
-        padding={2}
-        fullWidth
-        asChild
-      >
-        <ul>
-          <DndContext
-            id={id}
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-            onDragStart={handleDragStart}
+      <Modal.Title className="flex w-full items-center justify-between pt-6 pb-3">
+        Folders
+        <div className="flex gap-2">
+          <Button
+            disabled={isCreatingFolder}
+            loading={isCreatingFolder}
+            variant="secondary"
+            size="md"
+            type="submit"
+            form="create-project-folder"
+            className="fade"
+            data-fade-in={canCreateMoreFolders}
+            before={<Plus />}
           >
-            <SortableContext
-              disabled={!isEditing}
-              items={folders}
-              strategy={verticalListSortingStrategy}
-            >
-              {folders.map((folder) => (
-                <FolderListItem
-                  mode={isEditing ? 'edit' : 'default'}
-                  key={folder.id}
-                  onClick={handleFolderClick}
-                  folder={folder}
-                />
-              ))}
-              <ClientOnly>
-                {() =>
-                  createPortal(
-                    <DragOverlay zIndex={2000}>
-                      {activeFolderId && activeFolder && (
-                        <FolderListItem
-                          mode="edit"
-                          isOverlay
-                          key={activeFolderId}
-                          folder={activeFolder}
-                        />
-                      )}
-                    </DragOverlay>,
-                    document.body
-                  )
-                }
-              </ClientOnly>
-            </SortableContext>
-          </DndContext>
-        </ul>
-      </Stack>
-      <ModalFooter className={styles.project__foldersModalFooter}>
+            Create
+          </Button>
+          <Button
+            onClick={handleEdit}
+            variant={isEditing ? 'secondary' : 'primary'}
+            before={isEditing ? null : <Pencil />}
+            size="md"
+          >
+            {isEditing && 'Done'}
+            {!isEditing && 'Edit'}
+          </Button>
+        </div>
+      </Modal.Title>
+      <ul className="flex w-full flex-col gap-1 overflow-x-hidden overflow-y-auto p-2 transition-all">
+        <DndContext
+          id={id}
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          onDragStart={handleDragStart}
+        >
+          <SortableContext
+            disabled={!isEditing}
+            items={folders}
+            strategy={verticalListSortingStrategy}
+          >
+            {folders.map((folder) => (
+              <FolderListItem
+                mode={isEditing ? 'edit' : 'default'}
+                key={folder.id}
+                onClick={handleFolderClick}
+                folder={folder}
+              />
+            ))}
+            <ClientOnly>
+              {() =>
+                createPortal(
+                  <DragOverlay zIndex={2000}>
+                    {activeFolderId && activeFolder && (
+                      <FolderListItem
+                        mode="edit"
+                        isOverlay
+                        key={activeFolderId}
+                        folder={activeFolder}
+                      />
+                    )}
+                  </DragOverlay>,
+                  document.body
+                )
+              }
+            </ClientOnly>
+          </SortableContext>
+        </DndContext>
+      </ul>
+      <Modal.Footer className="grid [grid-template-areas:'before_stack_after']">
         <p
-          data-fade-in={isEditing}
-          className={cx(styles.project__foldersModalFooterText, 'fade')}
+          className={cx(
+            'text-secondary w-full text-center opacity-0 transition-opacity [grid-area:stack]',
+            {
+              'opacity-100': isEditing,
+            }
+          )}
         >
           Exit editing mode by clicking &quot;Done&quot;
         </p>
         <p
-          data-fade-in={!isEditing}
-          className={cx(styles.project__foldersModalFooterText, 'fade')}
+          className={cx(
+            'text-secondary w-full text-center opacity-0 transition-opacity [grid-area:stack]',
+            {
+              'opacity-100': !isEditing,
+            }
+          )}
         >
           You can edit folders by clicking &quot;Edit&quot; button
         </p>
-      </ModalFooter>
+      </Modal.Footer>
     </>
   )
 }
@@ -209,8 +203,9 @@ const ModalContent: React.FC<{
 const ProjectFoldersModal: React.FC<{ onClose?: () => void }> = ({
   onClose,
 }) => {
-  const project = useProject()
-  const createFolderAction = '/api/projects/' + project.id + '/folders/create'
+  const { data } = useProject()
+  const project = data?.project
+  const createFolderAction = '/api/projects/' + project?.id + '/folders/create'
   const createFolderFetcher = useFetcher({ key: createFolderAction })
 
   return (

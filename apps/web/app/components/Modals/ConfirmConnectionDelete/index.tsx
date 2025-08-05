@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
 import Button from '@valley/ui/Button'
-import ModalHeader from '@valley/ui/ModalHeader'
-import ModalFooter from '@valley/ui/ModalFooter'
-import ModalContent from '@valley/ui/ModalContent'
-import styles from './ConfirmConnectionDelete.module.css'
+import { Modal } from '@valley/ui/Modal'
 import { PROVIDER_LABELS } from 'app/config/connections'
 import type { AccountData } from 'app/routes/_user+/_home+/settings+/security'
 import { authClient } from '@valley/auth/client'
@@ -21,7 +18,7 @@ const passwordModalContent = (
     <br />
     <br />
     After removing it, you will still be able to log into your account with{' '}
-    <span className={styles.confirmConnectionDelete__label}>magic links</span>
+    <span className="text-primary font-medium">magic links</span>
     .
     <br />
     <br />
@@ -32,13 +29,13 @@ const passwordModalContent = (
 const socialProviderModalContent = (label: string) => (
   <p>
     You are about to remove the login connection for{' '}
-    <span className={styles.confirmConnectionDelete__label}>{label}</span>
+    <span className="text-primary font-medium">{label}</span>
     .
     <br />
     <br />
     After removing it, you won&apos;t be able to use{' '}
-    <span className={styles.confirmConnectionDelete__label}>{label}</span> to
-    log into your account anymore.
+    <span className="text-primary font-medium">{label}</span> to log into your
+    account anymore.
     <br />
     <br />
     Do you want to continue?
@@ -87,12 +84,12 @@ const ConfirmConnectionDeleteModal: React.FC<ConfirmConnectionDeleteProps> = ({
 
   return (
     <>
-      <ModalHeader>Disconnect {label}</ModalHeader>
-      <ModalContent className={styles.confirmConnectionDelete__content}>
+      <Modal.Title>Disconnect {label}</Modal.Title>
+      <Modal.Content className="text-secondary pt-1">
         {data.provider === 'credential' && passwordModalContent}
         {data.provider !== 'credential' && socialProviderModalContent(label)}
-      </ModalContent>
-      <ModalFooter
+      </Modal.Content>
+      <Modal.Footer
         before={
           <Button
             tabIndex={0}

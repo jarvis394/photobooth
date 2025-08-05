@@ -20,7 +20,6 @@ import {
   RemixFormProvider,
   useRemixForm,
 } from 'remix-hook-form'
-import { FieldErrors } from 'react-hook-form'
 import TextField from '@valley/ui/TextField'
 import { db, users, eq } from '@valley/db'
 import { auth } from '@valley/auth'
@@ -34,8 +33,6 @@ const SignupSchema = z.intersection(
   }),
   z.record(z.string(), z.string().optional())
 )
-
-type FormData = z.infer<typeof SignupSchema>
 
 const resolver = zodResolver(SignupSchema)
 
@@ -70,7 +67,7 @@ export async function action({ request }: Route.ActionArgs) {
     errors,
     data: submissionData,
     receivedValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
 
   checkHoneypot(receivedValues)
 
@@ -93,10 +90,9 @@ export async function action({ request }: Route.ActionArgs) {
       {
         errors: {
           email: {
-            type: 'value',
             message: 'A user already exists with this email',
           },
-        } satisfies FieldErrors<FormData>,
+        },
       },
       {
         status: 401,
@@ -125,10 +121,9 @@ export async function action({ request }: Route.ActionArgs) {
       {
         errors: {
           email: {
-            type: 'value',
             message: 'Cannot register right now, try again later',
           },
-        } satisfies FieldErrors<FormData>,
+        },
       },
       { status: 500 }
     )
@@ -144,13 +139,13 @@ const RegisterPage: React.FC<Route.ComponentProps> = () => {
   const [searchParams] = useSearchParams()
   const redirectTo = searchParams.get(redirectToKey)
   const target = searchParams.get(targetKey)
-  const methods = useRemixForm<FormData>({
+  const methods = useRemixForm({
     mode: 'all',
     reValidateMode: 'onChange',
     resolver,
     defaultValues: {
-      redirectTo: redirectTo || undefined,
-      email: target || undefined,
+      redirectTo: redirectTo || '',
+      email: target || '',
     },
     submitConfig: {
       viewTransition: true,

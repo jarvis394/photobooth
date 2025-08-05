@@ -29,8 +29,6 @@ const DetailsFormSchema = z.object({
   phone: looseOptional(PhoneSchema),
 })
 
-type FormData = z.infer<typeof DetailsFormSchema>
-
 const resolver = zodResolver(DetailsFormSchema)
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -48,7 +46,7 @@ export async function action({ request }: Route.ActionArgs) {
     errors,
     data: submissionData,
     receivedValues: defaultValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
   if (errors) {
     return data(
       { errors, defaultValues },
@@ -125,7 +123,7 @@ const OnboardingDetailsRoute: React.FC<Route.ComponentProps> = ({
 }) => {
   const isPending = useIsPending()
   const { handleSubmit, control, getFieldState, register, formState } =
-    useRemixForm<FormData>({
+    useRemixForm({
       mode: 'all',
       reValidateMode: 'onChange',
       resolver,

@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import ButtonBase from '@valley/ui/ButtonBase'
 import styles from './FolderCard.module.css'
-import cx from 'classnames'
 import {
   MoreVertical,
   PencilEdit,
@@ -14,6 +12,8 @@ import type { Folder } from '@valley/db'
 import IconButton from '@valley/ui/IconButton'
 import { Link, useNavigation, useParams } from 'react-router'
 import { useModal } from 'app/hooks/useModal'
+import { cn } from '@valley/shared'
+import { paperVariants } from '@valley/ui/Paper'
 
 type FolderCardProps = {
   folder: Folder
@@ -111,33 +111,37 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, onClick }) => {
       onOpenChange={closeMenu}
       openOnContextMenu
     >
-      <ButtonBase
-        asChild
-        variant="secondary"
-        shimmer={isLoading}
-        className={cx(styles.folderCard, {
-          [styles['folderCard--active']]: isActive,
-        })}
+      <Link
+        onClick={handleClick}
+        className={cn(
+          paperVariants({ variant: 'secondary', button: true }),
+          'flex w-60 items-center gap-2 rounded-2xl py-3 pr-2 pl-4 transition-all',
+          {
+            'bg-button-secondary-hovered ring-alpha-transparent-32': isActive,
+            shimmer: isLoading,
+          }
+        )}
+        replace
+        discover="render"
+        to={folderLink}
       >
-        <Link onClick={handleClick} replace discover="render" to={folderLink}>
-          <div className={styles.folderCard__content}>
-            <h5 className={styles.folderCard__contentTitle}>{folder.title}</h5>
-            <div className={styles.folderCard__contentSubtitle}>
-              <p>{folder.totalFiles} files</p>
-              <span>•</span>
-              <p>{totalSize}</p>
-            </div>
+        <div className={styles.folderCard__content}>
+          <h5 className={styles.folderCard__contentTitle}>{folder.title}</h5>
+          <div className={styles.folderCard__contentSubtitle}>
+            <p>{folder.totalFiles} files</p>
+            <span>•</span>
+            <p>{totalSize}</p>
           </div>
+        </div>
 
-          <Menu.Trigger asChild>
-            <IconButton onClick={handleMenuClick} size="sm" variant="tertiary">
-              <MoreVertical />
-            </IconButton>
-          </Menu.Trigger>
+        <Menu.Trigger asChild>
+          <IconButton onClick={handleMenuClick} size="sm" variant="tertiary">
+            <MoreVertical />
+          </IconButton>
+        </Menu.Trigger>
 
-          <FolderCardMenuContent folder={folder} />
-        </Link>
-      </ButtonBase>
+        <FolderCardMenuContent folder={folder} />
+      </Link>
     </Menu.Root>
   )
 }

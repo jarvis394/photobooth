@@ -5,7 +5,10 @@ import ansis from 'ansis'
 import closeWithGrace from 'close-with-grace'
 import compression from 'compression'
 import express from 'express'
-import rateLimit, { Options as RateLimitOptions } from 'express-rate-limit'
+import rateLimit, {
+  ipKeyGenerator,
+  Options as RateLimitOptions,
+} from 'express-rate-limit'
 import getPort, { portNumbers } from 'get-port'
 import { helmet } from '@nichtsam/helmet/node-http'
 import morgan from 'morgan'
@@ -102,6 +105,7 @@ app.use(
   morgan('tiny', {
     skip(req) {
       if (req.path.startsWith('/api/files/')) return true
+      if (req.path.includes('__manifest')) return true
       return false
     },
   })
@@ -116,7 +120,9 @@ const rateLimitDefault: Partial<RateLimitOptions> = {
   validate: { trustProxy: false },
   keyGenerator: (req: express.Request) => {
     return (
-      req.get('fly-client-ip') ?? req.get('cf-connecting-ip') ?? `${req.ip}`
+      req.get('fly-client-ip') ??
+      req.get('cf-connecting-ip') ??
+      ipKeyGenerator(req.ip || '')
     )
   },
 }

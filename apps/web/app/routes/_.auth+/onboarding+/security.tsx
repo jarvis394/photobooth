@@ -27,17 +27,16 @@ const SecurityFormSchema = z
     usePassword: z.boolean(),
     password: looseOptional(PasswordSchema),
   })
-  .superRefine((values, context) => {
-    if (values.usePassword && !values.password) {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
+  .check(({ value, issues }) => {
+    if (value.usePassword && !value.password) {
+      issues.push({
+        code: 'custom',
+        input: value.password,
         message: 'Password cannot be empty',
         path: ['password'],
       })
     }
   })
-
-type FormData = z.infer<typeof SecurityFormSchema>
 
 const resolver = zodResolver(SecurityFormSchema)
 
@@ -52,7 +51,7 @@ export async function action({ request }: Route.ActionArgs) {
     errors,
     data: submissionData,
     receivedValues: defaultValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
   if (errors) {
     return data(
       { errors, defaultValues },
@@ -92,11 +91,11 @@ const OnboardingSecurityRoute: React.FC<Route.ComponentProps> = ({
 }) => {
   const isPending = useIsPending()
   const { handleSubmit, watch, getFieldState, register, formState } =
-    useRemixForm<FormData>({
+    useRemixForm({
       mode: 'all',
       reValidateMode: 'onChange',
       resolver,
-      defaultValues: loaderData.submission.data,
+      defaultValues: { ...loaderData.submission.data },
       submitConfig: {
         viewTransition: true,
       },

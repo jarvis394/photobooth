@@ -7,18 +7,21 @@ import { useModal } from 'app/hooks/useModal'
 import { useRootLoaderData } from 'app/utils/misc'
 import { useUserStore } from 'app/utils/user'
 import { MoreHorizontal, Share, PencilEdit } from 'geist-ui-icons'
-import { useProject } from 'app/utils/project'
+import { useProject } from 'app/utils/queries/project'
 import { useParams } from 'react-router'
 import styles from './project.module.css'
 import cx from 'classnames'
 import React from 'react'
+import { Route } from './+types'
 
 const ProjectHeader = () => {
   const {
     ENV: { GALLERY_SERVICE_URL },
   } = useRootLoaderData()
-  const { folderId } = useParams()
-  const project = useProject()
+  const { projectId = '', folderId = '' } =
+    useParams<Route.ComponentProps['params']>()
+  const { data: projectData } = useProject({ projectId })
+  const project = projectData?.project
   const currentFolder = project?.folders?.find((e) => e.id === folderId)
   const user = useUserStore((state) => state.data)
   const { openModal } = useModal()

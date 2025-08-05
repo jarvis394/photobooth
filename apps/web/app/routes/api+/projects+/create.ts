@@ -1,4 +1,3 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { data, redirect } from 'react-router'
 import { db, folders, projects } from '@valley/db'
 import { requireUser } from 'app/server/auth/auth.server'
@@ -7,6 +6,7 @@ import dayjs from 'dayjs'
 import { getValidatedFormData } from 'remix-hook-form'
 import { z } from 'zod'
 import { Route } from './+types/create'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export const ProjectsCreateSchema = z.object({
   projectName: z.string(),
@@ -14,10 +14,8 @@ export const ProjectsCreateSchema = z.object({
   visibility: z.enum(['public', 'private']),
   dateShot: z.coerce.date().or(z.null()).optional(),
   password: z.string().or(z.null()).optional(),
-  withPassword: z.boolean().optional().default(false),
+  withPassword: z.boolean().default(false).optional(),
 })
-
-type FormData = z.infer<typeof ProjectsCreateSchema>
 
 const resolver = zodResolver(ProjectsCreateSchema)
 
@@ -30,7 +28,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     errors,
     data: submissionData,
     receivedValues: defaultValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
   if (errors) {
     return data(
       { ok: false, errors, defaultValues },

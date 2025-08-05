@@ -1,5 +1,5 @@
 .onboarding__selectButton:global(.Button) {
-  --themed-border: var(--alpha-transparent-07);
+  --themed-border: var(--alpha-transparent-12);
   --x-padding: 20px;
   --height: 56px;
   padding: 14px 20px;

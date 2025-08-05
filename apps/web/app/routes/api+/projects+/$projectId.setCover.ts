@@ -7,20 +7,18 @@ import { getValidatedFormData } from 'remix-hook-form'
 import { z } from 'zod'
 import { ProjectService } from 'app/server/services/project.server'
 import { FileService } from 'app/server/services/file.server'
-import { Route } from './+types/$id.setCover'
+import { Route } from './+types/$projectId.setCover'
 
 export const ProjectSetCoverSchema = z.object({
   fileId: z.string(),
 })
-
-type FormData = z.infer<typeof ProjectSetCoverSchema>
 
 const resolver = zodResolver(ProjectSetCoverSchema)
 
 export const loader = () => redirect('/projects')
 
 export const action = async ({ request, params }: Route.ActionArgs) => {
-  const projectId = params.id
+  const { projectId } = params
   const user = await requireUser(request)
 
   invariantResponse(projectId, 'Missing project ID', { status: 400 })
@@ -29,7 +27,7 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
     errors,
     data: submissionData,
     receivedValues: defaultValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
   if (errors) {
     return data(
       { ok: false, errors, defaultValues },

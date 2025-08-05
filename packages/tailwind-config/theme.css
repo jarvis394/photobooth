@@ -1,0 +1,457 @@
+@theme {
+  --breakpoint-xs: 24rem;
+
+  --color-default: var(--background-default);
+  --color-paper: var(--background-paper);
+
+  --color-primary: hsl(var(--ds-gray-1000));
+  --color-secondary: hsl(var(--ds-gray-900));
+  --color-hint: hsl(var(--ds-gray-800));
+
+  --color-primary-inversed: hsl(var(--ds-gray-100));
+  --color-secondary-inversed: hsl(var(--ds-gray-200));
+  --color-hint-inversed: hsl(var(--ds-gray-300));
+
+  --color-link: var(--link-color);
+
+  --color-alpha-solid-03: var(--alpha-solid-03);
+  --color-alpha-solid-07: var(--alpha-solid-07);
+  --color-alpha-transparent-03: hsla(var(--ds-gray-1000) / 3%);
+  --color-alpha-transparent-07: hsla(var(--ds-gray-1000) / 7%);
+  --color-alpha-transparent-12: hsla(var(--ds-gray-1000) / 12%);
+  --color-alpha-transparent-24: hsla(var(--ds-gray-1000) / 24%);
+  --color-alpha-transparent-32: hsla(var(--ds-gray-1000) / 32%);
+  --color-alpha-transparent-50: hsla(var(--ds-gray-1000) / 50%);
+  --color-alpha-transparent-70: hsla(var(--ds-gray-1000) / 70%);
+  --color-alpha-transparent-80: hsla(var(--ds-gray-1000) / 80%);
+  --color-alpha-inversed-transparent-32: hsla(var(--ds-gray-100) / 32%);
+
+  --color-button-primary: var(--button-primary-bg);
+  --color-button-primary-text: var(--button-primary-fg);
+  --color-button-primary-hovered: var(--button-primary-hovered-bg);
+  --color-button-primary-hovered-text: var(--button-primary-hovered-fg);
+
+  --color-button-secondary: var(--button-secondary-bg);
+  --color-button-secondary-text: var(--button-secondary-fg);
+  --color-button-secondary-border: var(--alpha-transparent-12);
+  --color-button-secondary-hovered: var(--button-secondary-hovered-bg);
+  --color-button-secondary-hovered-text: var(--button-secondary-hovered-fg);
+
+  --color-button-secondary-dimmed: var(--button-secondary-dimmed-bg);
+  --color-button-secondary-dimmed-text: var(--button-secondary-dimmed-fg);
+  --color-button-secondary-dimmed-border: var(--alpha-transparent-12);
+  --color-button-secondary-dimmed-hovered: var(
+    --button-secondary-dimmed-hovered-bg
+  );
+  --color-button-secondary-dimmed-hovered-text: var(
+    --button-secondary-dimmed-hovered-fg
+  );
+
+  --color-button-tertiary: var(--button-tertiary-bg);
+  --color-button-tertiary-text: var(--button-tertiary-fg);
+  --color-button-tertiary-hovered: var(--button-tertiary-hovered-bg);
+  --color-button-tertiary-hovered-text: var(--button-tertiary-hovered-fg);
+
+  --color-button-tertiary-dimmed: var(--button-tertiary-dimmed-bg);
+  --color-button-tertiary-dimmed-text: var(--button-tertiary-dimmed-fg);
+  --color-button-tertiary-dimmed-hovered: var(
+    --button-tertiary-dimmed-hovered-bg
+  );
+  --color-button-tertiary-dimmed-hovered-text: var(
+    --button-tertiary-dimmed-hovered-fg
+  );
+  --color-button-tertiary-dimmed-focused-text: var(
+    --button-tertiary-dimmed-focused-fg
+  );
+
+  --color-button-warning: var(--button-warning-bg);
+  --color-button-warning-text: var(--button-warning-fg);
+  --color-button-warning-hovered: var(--button-warning-hovered-bg);
+  --color-button-warning-hovered-text: var(--button-warning-text-fg);
+
+  --color-button-danger: var(--button-danger-bg);
+  --color-button-danger-text: var(--button-danger-fg);
+  --color-button-danger-hovered: var(--button-danger-hovered-bg);
+  --color-button-danger-hovered-text: var(--button-danger-fg);
+
+  --color-button-danger-dimmed: var(--button-danger-dimmed-bg);
+  --color-button-danger-dimmed-text: var(--button-danger-dimmed-fg);
+  --color-button-danger-dimmed-hovered: var(--button-danger-dimmed-hovered-bg);
+  --color-button-danger-dimmed-hovered-text: var(
+    --button-danger-dimmed-hovered-fg
+  );
+  --color-button-danger-dimmed-focused-text: var(
+    --button-danger-dimmed-focused-text
+  );
+
+  --color-button-disabled: var(--button-disabled-bg);
+  --color-button-disabled-text: var(--button-disabled-fg);
+  --color-button-disabled-border: var(--button-disabled-border);
+
+  --color-button-github-theme: var(--button-github-theme-bg);
+  --color-button-github-theme-text: var(--button-github-theme-fg);
+  --color-button-github-theme-hovered: var(--button-github-theme-hovered-bg);
+  --color-button-github-theme-hovered-text: var(
+    --button-github-theme-hovered-fg
+  );
+
+  --color-button-google-theme: var(--button-google-theme-bg);
+  --color-button-google-theme-text: var(--button-google-theme-fg);
+  --color-button-google-theme-hovered: var(--button-google-theme-hovered-bg);
+  --color-button-google-theme-hovered-text: var(
+    --button-google-theme-hovered-fg
+  );
+  --color-button-google-theme-focused-text: var(
+    --button-google-theme-focused-fg
+  );
+
+  --color-button-vk-theme-bg: var(--button-vk-theme-bg);
+  --color-button-vk-theme-text: var(--button-vk-theme-fg);
+  --color-button-vk-theme-hovered: var(--button-vk-theme-hovered-bg);
+  --color-button-vk-theme-hovered-text: var(--button-vk-theme-hovered-fg);
+  --color-button-vk-theme-focused-text: var(--button-vk-theme-focused-fg);
+
+  --color-input-border: var(--input-border);
+  --color-input-border-hovered: var(--input-border-hovered);
+  --color-input-border-focused: var(--input-border-focused);
+  --color-input-border-focused-shadow: var(--input-border-focused-shadow);
+  --color-input-border-error: var(--input-border-error);
+  --color-input-border-error-shadow: var(--input-border-error-shadow);
+
+  --color-modal-backdrop: var(--modal-backdrop);
+}
+
+@layer base {
+  *[data-theme='light'],
+  :root[data-theme='light'] {
+    /** Background */
+    --background-default: hsl(var(--ds-background-200));
+    --background-paper: hsl(var(--ds-background-100));
+
+    /** Text */
+    --text-primary: hsl(var(--ds-gray-1000));
+    --text-secondary: hsl(var(--ds-gray-900));
+    --text-hint: hsl(var(--ds-gray-800));
+
+    /** Text / Inversed */
+    --text-primary-inversed: hsl(var(--ds-gray-100));
+    --text-secondary-inversed: hsl(var(--ds-gray-200));
+    --text-hint-inversed: hsl(var(--ds-gray-300));
+
+    /** Button */
+    --button-focused-fg: rgb(0, 0, 0);
+    --button-focused-fg-inversed: rgba(255, 255, 255, 1);
+
+    /** Button / Primary */
+    --button-primary-fg: var(--text-primary-inversed);
+    --button-primary-bg: hsl(var(--ds-gray-1000));
+    --button-primary-hovered-fg: var(--text-primary-inversed);
+    --button-primary-hovered-bg: hsla(var(--ds-gray-1000) / 90%);
+
+    /** Button / Secondary */
+    --button-secondary-fg: var(--text-primary);
+    --button-secondary-bg: var(--background-paper);
+    --button-secondary-border: var(--alpha-transparent-12);
+    --button-secondary-hovered-fg: var(--text-primary);
+    --button-secondary-hovered-bg: #f3f3f3;
+
+    /** Button / Secondary Dimmed */
+    --button-secondary-dimmed-fg: var(--text-secondary);
+    --button-secondary-dimmed-bg: var(--background-paper);
+    --button-secondary-dimmed-border: var(--alpha-transparent-12);
+    --button-secondary-dimmed-hovered-fg: var(--text-primary);
+    --button-secondary-dimmed-hovered-bg: #f3f3f3;
+
+    /** Button / Tertiary */
+    --button-tertiary-fg: var(--text-primary);
+    --button-tertiary-bg: transparent;
+    --button-tertiary-hovered-fg: var(--text-primary);
+    --button-tertiary-hovered-bg: var(--alpha-transparent-07);
+
+    /** Button / Tertiary Dimmed */
+    --button-tertiary-dimmed-fg: var(--text-hint);
+    --button-tertiary-dimmed-bg: transparent;
+    --button-tertiary-dimmed-hovered-fg: var(--text-secondary);
+    --button-tertiary-dimmed-hovered-bg: var(--alpha-transparent-07);
+    --button-tertiary-dimmed-focused-fg: var(--alpha-transparent-70);
+
+    /** Button / Warning */
+    --button-warning-fg: var(--text-primary);
+    --button-warning-bg: #f99c1b;
+    --button-warning-hovered-fg: var(--button-warning-fg);
+    --button-warning-hovered-bg: #d98817;
+
+    /** Button / Danger */
+    --button-danger-fg: #ffffff;
+    --button-danger-bg: var(--ds-red-800);
+    --button-danger-hovered-fg: var(--button-danger-fg);
+    --button-danger-hovered-bg: #b52e33;
+
+    /** Button / Danger Dimmed */
+    --button-danger-dimmed-fg: var(--ds-red-800);
+    --button-danger-dimmed-bg: rgba(229, 72, 77, 0.12);
+    --button-danger-dimmed-hovered-fg: var(--ds-red-900);
+    --button-danger-dimmed-hovered-bg: rgba(229, 72, 77, 0.16);
+    --button-danger-dimmed-focused-fg: var(--ds-red-700);
+
+    /** Button / Disabled */
+    --button-disabled-fg: var(--alpha-transparent-50);
+    --button-disabled-bg: var(--alpha-transparent-12);
+    --button-disabled-border: var(--alpha-transparent-07);
+
+    /** Button / Github Theme */
+    --button-github-theme-fg: var(--text-primary);
+    --button-github-theme-bg: #24292e;
+    --button-github-theme-hovered-fg: var(--text-primary);
+    --button-github-theme-hovered-bg: #313941;
+
+    /** Button / Google Theme */
+    --button-google-theme-fg: var(--text-primary);
+    --button-google-theme-bg: var(--alpha-transparent-07);
+    --button-google-theme-hovered-fg: var(--text-primary);
+    --button-google-theme-hovered-bg: var(--alpha-transparent-12);
+    --button-google-theme-focused-fg: var(--button-focused-fg);
+
+    /** Button / VK Theme */
+    --button-vk-theme-fg: var(--text-primary);
+    --button-vk-theme-bg: #0067dc;
+    --button-vk-theme-hovered-fg: var(--text-primary);
+    --button-vk-theme-hovered-bg: #1375e5;
+    --button-vk-theme-focused-fg: var(--button-focused-fg-inversed);
+
+    /** Input */
+    --input-border: rgba(23, 23, 23, 0.12);
+    --input-border-hovered: rgba(23, 23, 23, 0.24);
+    --input-border-focused: var(--text-secondary);
+    --input-border-focused-shadow: rgba(0, 0, 0, 0.16);
+    --input-border-error: var(--ds-red-600);
+    --input-border-error-shadow: rgba(229, 72, 77, 0.16);
+
+    /** Alpha */
+    --alpha-solid-03: #f2f2f2;
+    --alpha-solid-07: #e8e8e8;
+    --alpha-transparent-03: hsla(var(--ds-gray-1000) / 3%);
+    --alpha-transparent-07: hsla(var(--ds-gray-1000) / 7%);
+    --alpha-transparent-12: hsla(var(--ds-gray-1000) / 12%);
+    --alpha-transparent-24: hsla(var(--ds-gray-1000) / 24%);
+    --alpha-transparent-32: hsla(var(--ds-gray-1000) / 32%);
+    --alpha-transparent-50: hsla(var(--ds-gray-1000) / 50%);
+    --alpha-transparent-70: hsla(var(--ds-gray-1000) / 70%);
+    --alpha-transparent-80: hsla(var(--ds-gray-1000) / 80%);
+    --alpha-inversed-transparent-32: hsla(var(--ds-gray-100) / 32%);
+
+    /** Toast */
+    --toast-default-bg: var(--background-paper);
+    --toast-default-fg: var(--text-primary);
+    --toast-default-border: var(--alpha-transparent-07);
+    --toast-success-bg: var(--ds-teal-100);
+    --toast-success-fg: var(--ds-teal-1000);
+    --toast-success-border: var(--ds-teal-300);
+    --toast-info-bg: var(--ds-blue-700);
+    --toast-info-fg: var(--ds-blue-1000);
+    --toast-info-border: var(--alpha-transparent-12);
+    --toast-warning-bg: var(--ds-amber-200);
+    --toast-warning-fg: var(--ds-amber-1000);
+    --toast-warning-border: var(--ds-amber-400);
+    --toast-error-bg: #db262c;
+    --toast-error-fg: var(--ds-red-1000);
+    --toast-error-border: var(--alpha-transparent-07);
+
+    /** Shadow */
+    --shadow-0: none;
+    --shadow-1:
+      0px 2px 1px -1px rgba(0, 0, 0, 0.07), 0px 1px 1px 0px rgba(0, 0, 0, 0.03),
+      0px 1px 3px 0px rgba(0, 0, 0, 0.03);
+    --shadow-2:
+      0px 3px 1px -2px rgba(0, 0, 0, 0.07), 0px 2px 2px 0px rgba(0, 0, 0, 0.03),
+      0px 1px 5px 0px rgba(0, 0, 0, 0.03);
+    --shadow-3:
+      0px 3px 3px -2px rgba(0, 0, 0, 0.07), 0px 3px 4px 0px rgba(0, 0, 0, 0.03),
+      0px 1px 8px 0px rgba(0, 0, 0, 0.03);
+    --shadow-4:
+      0px 2px 4px -1px rgba(0, 0, 0, 0.07), 0px 4px 5px 0px rgba(0, 0, 0, 0.03),
+      0px 1px 10px 0px rgba(0, 0, 0, 0.03);
+    --shadow-5:
+      0px 3px 5px -1px rgba(0, 0, 0, 0.07), 0px 5px 8px 0px rgba(0, 0, 0, 0.03),
+      0px 1px 14px 0px rgba(0, 0, 0, 0.03);
+    --shadow-6:
+      0px 3px 5px -1px rgba(0, 0, 0, 0.07),
+      0px 6px 10px 0px rgba(0, 0, 0, 0.03), 0px 1px 18px 0px rgba(0, 0, 0, 0.03);
+
+    /** Overlay */
+    --overlay-shadow:
+      0 0 4px 0 rgba(0, 0, 0, 0.03), 0 4px 16px 0 rgba(0, 0, 0, 0.03);
+
+    /** Modal */
+    --modal-backdrop: var(--alpha-transparent-50);
+
+    /** Link */
+    --link-color: var(--ds-blue-900);
+  }
+
+  *[data-theme='dark'],
+  :root[data-theme='dark'] {
+    /** Background */
+    --background-default: hsl(var(--ds-background-200));
+    --background-paper: hsl(var(--ds-background-100));
+
+    /** Text */
+    --text-primary: hsl(var(--ds-gray-1000));
+    --text-secondary: hsl(var(--ds-gray-900));
+    --text-hint: hsl(var(--ds-gray-800));
+
+    /** Text / Inversed */
+    --text-primary-inversed: hsl(var(--ds-gray-100));
+    --text-secondary-inversed: hsl(var(--ds-gray-200));
+    --text-hint-inversed: hsl(var(--ds-gray-300));
+
+    /** Button */
+    --button-focused-fg: white;
+    --button-focused-fg-inversed: rgba(0, 0, 0, 0.8);
+
+    /** Button / Primary */
+    --button-primary-fg: var(--text-primary-inversed);
+    --button-primary-bg: hsl(var(--ds-gray-1000));
+    --button-primary-hovered-fg: var(--text-primary-inversed);
+    --button-primary-hovered-bg: hsla(var(--ds-gray-1000) / 90%);
+
+    /** Button / Secondary */
+    --button-secondary-fg: var(--text-primary);
+    --button-secondary-bg: var(--background-paper);
+    --button-secondary-border: var(--alpha-transparent-12);
+    --button-secondary-hovered-fg: var(--text-primary);
+    --button-secondary-hovered-bg: #1a1a1a;
+
+    /** Button / Secondary Dimmed */
+    --button-secondary-dimmed-fg: var(--text-secondary);
+    --button-secondary-dimmed-bg: var(--background-paper);
+    --button-secondary-dimmed-border: var(--alpha-transparent-12);
+    --button-secondary-dimmed-hovered-fg: var(--text-primary);
+    --button-secondary-dimmed-hovered-bg: #1a1a1a;
+
+    /** Button / Tertiary */
+    --button-tertiary-fg: var(--text-primary);
+    --button-tertiary-bg: transparent;
+    --button-tertiary-hovered-fg: var(--text-primary);
+    --button-tertiary-hovered-bg: var(--alpha-transparent-07);
+
+    /** Button / Tertiary Dimmed */
+    --button-tertiary-dimmed-fg: var(--text-hint);
+    --button-tertiary-dimmed-bg: transparent;
+    --button-tertiary-dimmed-hovered-fg: var(--text-secondary);
+    --button-tertiary-dimmed-hovered-bg: var(--alpha-transparent-07);
+    --button-tertiary-dimmed-focused-fg: var(--alpha-transparent-70);
+
+    /** Button / Warning */
+    --button-warning-fg: var(--text-primary-inversed);
+    --button-warning-bg: #ff990a;
+    --button-warning-hovered-fg: var(--text-primary-inversed);
+    --button-warning-hovered-bg: #ffaf3e;
+
+    /** Button / Danger */
+    --button-danger-fg: #ffffff;
+    --button-danger-bg: var(--ds-red-800);
+    --button-danger-hovered-fg: var(--button-danger-fg);
+    --button-danger-hovered-bg: var(--ds-red-900);
+
+    /** Button / Danger Dimmed */
+    --button-danger-dimmed-fg: var(--ds-red-800);
+    --button-danger-dimmed-bg: rgba(229, 72, 77, 0.12);
+    --button-danger-dimmed-hovered-fg: var(--ds-red-900);
+    --button-danger-dimmed-hovered-bg: rgba(229, 72, 77, 0.16);
+    --button-danger-dimmed-focused-fg: var(--ds-red-700);
+
+    /** Button / Disabled */
+    --button-disabled-fg: var(--alpha-transparent-50);
+    --button-disabled-bg: var(--alpha-transparent-12);
+    --button-disabled-border: var(--alpha-transparent-07);
+
+    /** Button / Github Theme */
+    --button-github-theme-fg: var(--text-primary);
+    --button-github-theme-bg: #24292e;
+    --button-github-theme-hovered-fg: var(--text-primary);
+    --button-github-theme-hovered-bg: #313941;
+
+    /** Button / Google Theme */
+    --button-google-theme-fg: var(--text-primary);
+    --button-google-theme-bg: var(--alpha-transparent-07);
+    --button-google-theme-hovered-fg: var(--text-primary);
+    --button-google-theme-hovered-bg: var(--alpha-transparent-12);
+
+    /** Button / VK Theme */
+    --button-vk-theme-fg: var(--text-primary);
+    --button-vk-theme-bg: #0067dc;
+    --button-vk-theme-hovered-fg: var(--text-primary);
+    --button-vk-theme-hovered-bg: #1375e5;
+
+    /** Input */
+    --input-border: #2b2b2b;
+    --input-border-hovered: #404040;
+    --input-border-focused: var(--text-secondary);
+    --input-border-focused-shadow: rgba(255, 255, 255, 0.24);
+    --input-border-error: var(--ds-red-600);
+    --input-border-error-shadow: rgba(229, 72, 77, 0.24);
+
+    /** Alpha */
+    --alpha-solid-03: #121212;
+    --alpha-solid-07: #1c1c1c;
+    --alpha-transparent-03: hsla(var(--ds-gray-1000) / 3%);
+    --alpha-transparent-07: hsla(var(--ds-gray-1000) / 7%);
+    --alpha-transparent-12: hsla(var(--ds-gray-1000) / 12%);
+    --alpha-transparent-24: hsla(var(--ds-gray-1000) / 24%);
+    --alpha-transparent-32: hsla(var(--ds-gray-1000) / 32%);
+    --alpha-transparent-50: hsla(var(--ds-gray-1000) / 50%);
+    --alpha-transparent-70: hsla(var(--ds-gray-1000) / 70%);
+    --alpha-transparent-80: hsla(var(--ds-gray-1000) / 80%);
+    --alpha-inversed-transparent-32: hsla(var(--ds-gray-100) / 32%);
+
+    /** Toast */
+    --toast-default-bg: var(--background-paper);
+    --toast-default-fg: var(--text-primary);
+    --toast-default-border: var(--alpha-transparent-07);
+    --toast-success-bg: var(--ds-teal-100);
+    --toast-success-fg: var(--ds-teal-1000);
+    --toast-success-border: var(--ds-teal-300);
+    --toast-info-bg: var(--ds-blue-700);
+    --toast-info-fg: var(--ds-blue-1000);
+    --toast-info-border: var(--alpha-transparent-12);
+    --toast-warning-bg: var(--ds-amber-200);
+    --toast-warning-fg: var(--ds-amber-1000);
+    --toast-warning-border: var(--ds-amber-400);
+    --toast-error-bg: #db262c;
+    --toast-error-fg: var(--ds-red-1000);
+    --toast-error-border: var(--alpha-transparent-07);
+
+    /** Shadow */
+    --shadow-0: none;
+    --shadow-1:
+      0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    --shadow-2:
+      0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    --shadow-3:
+      0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+    --shadow-4:
+      0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    --shadow-5:
+      0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+    --shadow-6:
+      0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+
+    /** Overlay */
+    --overlay-shadow:
+      0 0 4px 0 rgba(255, 255, 255, 0.03),
+      0 4px 16px 0 rgba(255, 255, 255, 0.03);
+
+    /** Modal */
+    --modal-backdrop: rgba(10, 10, 10, 0.5);
+
+    /** Link */
+    --link-color: var(--ds-blue-900);
+  }
+}

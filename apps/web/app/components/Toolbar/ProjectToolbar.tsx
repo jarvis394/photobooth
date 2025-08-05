@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react'
-import styles from './Toolbar.module.css'
 import AnimatedTabs from '../AnimatedTabs/AnimatedTabs'
 import { ToolbarItem } from './ToolbarItem'
 import { useLocation, useParams } from 'react-router'
-import { useProject } from 'app/utils/project'
+import { useProject } from 'app/utils/queries/project'
 import LinkTabItem from './LinkTabItem'
 
 const ProjectsToolbarTabItemUnmemoized = React.forwardRef<
@@ -12,11 +11,12 @@ const ProjectsToolbarTabItemUnmemoized = React.forwardRef<
 >(function ProjectsToolbarTabItem({ value, label, ...props }, ref) {
   const { projectId, folderId } = useParams()
   const projectBaseUrl = `/projects/${projectId}`
-  const data = useProject()
+  const { data } = useProject()
+  const project = data?.project
 
   if (value === projectBaseUrl) {
     const defaultFolder =
-      data?.folders?.find((e) => e.isDefaultFolder)?.id || folderId
+      project?.folders?.find((e) => e.isDefaultFolder)?.id || folderId
     return (
       <LinkTabItem
         {...props}
@@ -66,8 +66,8 @@ const ProjectsToolbar = () => {
   }, [folderId, location.pathname, projectBaseUrl])
 
   return (
-    <div className={styles.toolbar}>
-      <AnimatedTabs value={value}>
+    <div className="bg-paper border-alpha-transparent-12 sticky -top-[0.01px] z-10 flex border-b-1">
+      <AnimatedTabs value={value} className="px-2 sm:px-4">
         {projectToolbarItems.map((tab) => (
           <ProjectsToolbarTabItem
             key={tab.value}

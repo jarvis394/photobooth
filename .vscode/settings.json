@@ -3,7 +3,7 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsserver.pluginPaths": ["typescript-plugin-css-modules"],
   "tailwindCSS.experimental.classRegex": [["cn\\(`([^`]*)"]],
-  "tailwindCSS.classFunctions": ["tw", "cx", "cn"],
+  "tailwindCSS.classFunctions": ["tv", "cx", "cn"],
   "files.associations": {
     "*.css": "tailwindcss"
   }

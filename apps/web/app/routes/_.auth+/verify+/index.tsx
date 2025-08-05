@@ -20,7 +20,7 @@ import {
 } from 'remix-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { checkHoneypot } from 'app/server/honeypot.server'
-import { Controller, FieldErrors } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import { redirectWithToast } from 'app/server/toast.server'
 import { handleVerification as handleOnboardingVerification } from '../onboarding+/onboarding.server'
 import {
@@ -53,8 +53,6 @@ export const VerifySchema = z.object({
   [redirectToKey]: z.string().optional(),
 })
 
-type FormData = z.infer<typeof VerifySchema>
-
 const resolver = zodResolver(VerifySchema)
 
 export async function action({ request }: Route.ActionArgs) {
@@ -62,7 +60,7 @@ export async function action({ request }: Route.ActionArgs) {
     errors,
     data: submissionData,
     receivedValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
 
   checkHoneypot(receivedValues)
 
@@ -119,18 +117,17 @@ const VerifyRoute: React.FC<Route.ComponentProps> = ({ actionData }) => {
   })
   const target = searchParams.get(targetKey) || undefined
   const type = parseWithZodType.success ? parseWithZodType.data : '2fa'
-  const methods = useRemixForm<FormData>({
+  const methods = useRemixForm({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
     resolver,
     defaultValues: {
-      code: searchParams.get(codeKey) || undefined,
-      redirectTo: searchParams.get(redirectToKey) || undefined,
+      code: searchParams.get(codeKey) || '',
+      redirectTo: searchParams.get(redirectToKey) || '',
       type,
       target,
     },
     submitConfig: { viewTransition: true },
-    errors: actionData?.errors as FieldErrors<FormData>,
   })
 
   const isResendButtonDisabled = count !== 0 || didResendVerificationCode

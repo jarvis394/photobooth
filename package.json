@@ -29,11 +29,11 @@
     "@valley/eslint-config": "*",
     "@valley/typescript-config": "*",
     "cross-env": "^7.0.3",
-    "lint-staged": "^15.2.9",
+    "lint-staged": "^16.1.2",
     "patch-package": "^8.0.0",
-    "prettier": "^3.5.3",
-    "prettier-plugin-tailwindcss": "^0.6.11",
-    "turbo": "^2.5.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "turbo": "^2.5.5",
     "typescript": "^5.8.2"
   },
   "engines": {
@@ -45,12 +45,20 @@
     "packages/*"
   ],
   "dependencies": {
-    "husky": "^9.1.4",
-    "sharp": "^0.33.5"
+    "husky": "^9.1.7",
+    "minimatch": "^10.0.3",
+    "sharp": "^0.34.3"
   },
   "dotenvUpdater": {
     "envFile": ".env",
     "distFile": ".env.template",
     "checkExtraVars": true
-  }
+  },
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "@swc/core",
+    "@tailwindcss/oxide",
+    "core-js-pure",
+    "unrs-resolver"
+  ]
 }

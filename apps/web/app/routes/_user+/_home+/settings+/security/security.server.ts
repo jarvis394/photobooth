@@ -4,9 +4,8 @@ import { db } from '@valley/db'
 import { CREDENTIAL_PROVIDER_NAME } from 'app/config/connections'
 import { requireUser } from 'app/server/auth/auth.server'
 import { redirectWithToast } from 'app/server/toast.server'
-import { FieldErrors } from 'react-hook-form'
 import { getValidatedFormData } from 'remix-hook-form'
-import { FormData, resolver } from '.'
+import { resolver } from '.'
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const user = await requireUser(request)
@@ -15,7 +14,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
     errors,
     data: submissionData,
     receivedValues: defaultValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
   if (errors) {
     return data(
       { ok: false, errors, defaultValues },
@@ -42,7 +41,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
             currentPassword: {
               type: 'required',
             },
-          } satisfies FieldErrors<FormData>,
+          },
           defaultValues,
         },
         {
@@ -82,7 +81,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               message: (e as any).body.message,
             },
-          } satisfies FieldErrors<FormData>,
+          },
           defaultValues,
         },
         {
@@ -112,7 +111,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
               type: 'value',
               message: 'Unknown error occurred',
             },
-          } satisfies FieldErrors<FormData>,
+          },
           defaultValues,
         },
         {

@@ -25,12 +25,12 @@ import {
 import ProjectDesignSettings from './ProjectDesignSettings'
 import { PreviewOnDevices } from '@valley/gallery-module/preview-on-devices'
 import { MobilePreview } from '@valley/gallery-module/mobile-preview'
-import { useProject } from 'app/utils/project'
+import { useProject } from 'app/utils/queries/project'
 import { useTheme } from 'app/routes/resources+/theme-switch'
 import { useCoversStore } from 'app/stores/covers'
 import { useHints } from 'app/components/ClientHints/ClientHints'
 import Button from '@valley/ui/Button'
-import Modal from '@valley/ui/Modal'
+import { Modal } from '@valley/ui/Modal'
 
 const ProjectDesignDeleteCoverSchema = z.object({
   intent: z.enum(['delete-cover']),
@@ -77,8 +77,6 @@ export const ProjectDesignSchema = z.union([
   ProjectDesignGalleryThemeSchema,
 ])
 
-type FormData = z.infer<typeof ProjectDesignSchema>
-
 const resolver = zodResolver(ProjectDesignSchema)
 
 export const action = async ({ request, params }: Route.ActionArgs) => {
@@ -87,7 +85,7 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
     errors,
     data: submissionData,
     receivedValues: defaultValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
   if (errors) {
     return data(
       { ok: false, errors, defaultValues },
@@ -141,13 +139,16 @@ export const action = async ({ request, params }: Route.ActionArgs) => {
 
 const ProjectDesignRoute: React.FC<Route.ComponentProps> = () => {
   const [isMobilePreviewOpen, setMobilePreviewOpen] = useState(false)
-  const project = useProject()
-  const cover = project.cover
-  const position = useCoversStore((state) => state.covers[project.id])
+  const { data: projectData } = useProject()
+  const project = projectData?.project
+  const cover = project?.cover
+  const position = useCoversStore(
+    (state) => project && state.covers[project.id]
+  )
   const theme = useTheme()
   const hints = useHints()
   const resolvedTheme =
-    project.galleryTheme === 'system' ? theme : project.galleryTheme
+    project?.galleryTheme === 'system' ? theme : project?.galleryTheme || theme
 
   const openMobilePreview = () => {
     setMobilePreviewOpen(true)
@@ -182,7 +183,10 @@ const ProjectDesignRoute: React.FC<Route.ComponentProps> = () => {
         </div>
       </div>
       {cover && (
-        <Modal isOpen={isMobilePreviewOpen} onOpenChange={setMobilePreviewOpen}>
+        <Modal.Root
+          isOpen={isMobilePreviewOpen}
+          onOpenChange={setMobilePreviewOpen}
+        >
           <div className="m-4 h-[75vh] overflow-hidden rounded-2xl">
             <MobilePreview
               project={project}
@@ -192,7 +196,7 @@ const ProjectDesignRoute: React.FC<Route.ComponentProps> = () => {
               theme={resolvedTheme}
             />
           </div>
-        </Modal>
+        </Modal.Root>
       )}
     </>
   )

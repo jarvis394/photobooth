@@ -5,6 +5,7 @@ import { useHydrated } from 'remix-utils/use-hydrated'
 import { ThumbnailSize } from '../utils/getFileThumbnailQuery'
 import { cn, makeFileThumbnailPath } from '@valley/shared'
 import { Image as ImageIcon } from 'geist-ui-icons'
+import { mergeRefs } from 'react-merge-refs'
 
 export type ImageOwnProps =
   | {
@@ -50,28 +51,6 @@ const useImageLoaded = () => {
   return [ref, loaded, onLoad] as const
 }
 
-const mergeRefs = <T,>(
-  ...inputRefs: Array<React.Ref<T> | undefined>
-): React.Ref<T> | React.RefCallback<T> => {
-  const filteredInputRefs = inputRefs.filter(Boolean)
-
-  if (filteredInputRefs.length <= 1) {
-    const firstRef = filteredInputRefs[0]
-
-    return firstRef || null
-  }
-
-  return function mergedRefs(ref) {
-    for (const inputRef of filteredInputRefs) {
-      if (typeof inputRef === 'function') {
-        inputRef(ref)
-      } else if (inputRef) {
-        ;(inputRef as React.MutableRefObject<T | null>).current = ref
-      }
-    }
-  }
-}
-
 const Image: React.FC<ImageProps> = ({
   file,
   width,
@@ -92,7 +71,7 @@ const Image: React.FC<ImageProps> = ({
   } = containerProps
   const [error, setError] = useState(false)
   const [imageRef, loaded, onLoad] = useImageLoaded()
-  const mergedRef = mergeRefs(ref, imageRef)
+  const mergedRef = mergeRefs([ref, imageRef])
   const isHydrated = useHydrated()
   const imageSrc = useMemo(() => {
     if (file && !src) {

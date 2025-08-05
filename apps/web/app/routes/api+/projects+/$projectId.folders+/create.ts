@@ -3,8 +3,7 @@ import { data, redirect } from 'react-router'
 import { requireUser } from 'app/server/auth/auth.server'
 import { getValidatedFormData } from 'remix-hook-form'
 import { z } from 'zod'
-import { FoldersEditSchema } from './$id.edit'
-import { FieldErrors } from 'react-hook-form'
+import { FoldersEditSchema } from './$folderId.edit'
 import { PROJECT_MAX_FOLDERS } from '@valley/shared'
 import { db, folders, projects, and, eq } from '@valley/db'
 import { Route } from './+types/create'
@@ -14,8 +13,6 @@ export const FoldersCreateSchema = z
     projectId: z.string(),
   })
   .and(FoldersEditSchema)
-
-type FormData = z.infer<typeof FoldersCreateSchema>
 
 const resolver = zodResolver(FoldersCreateSchema)
 
@@ -28,7 +25,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
     errors,
     data: submissionData,
     receivedValues: defaultValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
   if (errors) {
     return data(
       { ok: false, errors, defaultValues },
@@ -52,10 +49,9 @@ export const action = async ({ request }: Route.ActionArgs) => {
         ok: false,
         errors: {
           title: {
-            type: 'validate',
             message: `Project ${submissionData.projectId} not found`,
           },
-        } satisfies FieldErrors<FormData>,
+        },
         defaultValues,
       },
       {
@@ -70,10 +66,9 @@ export const action = async ({ request }: Route.ActionArgs) => {
         ok: false,
         errors: {
           title: {
-            type: 'validate',
             message: `You can have only ${PROJECT_MAX_FOLDERS} folders in a project`,
           },
-        } satisfies FieldErrors<FormData>,
+        },
         defaultValues,
       },
       {

@@ -1,6 +1,7 @@
 .label {
   display: flex;
   font-size: 14px;
+  line-height: normal;
   font-weight: 420;
   color: var(--text-secondary);
   margin-bottom: 8px;

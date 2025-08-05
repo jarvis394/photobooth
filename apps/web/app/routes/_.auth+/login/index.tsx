@@ -22,7 +22,6 @@ import {
   useRemixForm,
 } from 'remix-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FieldErrors } from 'react-hook-form'
 import { useHydrated } from 'remix-utils/use-hydrated'
 import { db } from '@valley/db'
 import { auth } from '@valley/auth'
@@ -37,8 +36,6 @@ const EmailFormSchema = z.intersection(
   z.record(z.string(), z.string().optional())
 )
 
-type FormData = z.infer<typeof EmailFormSchema>
-
 const resolver = zodResolver(EmailFormSchema)
 
 export const handle: SEOHandle = {
@@ -52,7 +49,7 @@ export async function action({ request }: Route.ActionArgs) {
     errors,
     data: submissionData,
     receivedValues,
-  } = await getValidatedFormData<FormData>(request, resolver)
+  } = await getValidatedFormData(request, resolver)
 
   checkHoneypot(receivedValues)
 
@@ -105,10 +102,9 @@ export async function action({ request }: Route.ActionArgs) {
       {
         errors: {
           email: {
-            type: 'value',
             message: 'Could not send the OTP code, try again',
           },
-        } satisfies FieldErrors<FormData>,
+        },
       },
       { status: 500 }
     )
@@ -125,7 +121,7 @@ const LoginPage: React.FC = () => {
   const redirectTo = searchParams.get(redirectToKey)
   const target = searchParams.get(targetKey)
   const isHydrated = useHydrated()
-  const methods = useRemixForm<FormData>({
+  const methods = useRemixForm({
     mode: 'all',
     reValidateMode: 'onChange',
     resolver,

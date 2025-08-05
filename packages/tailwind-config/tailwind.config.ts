@@ -1,12 +1,10 @@
 import type { Config } from 'tailwindcss'
-import tailwindcssRadix from 'tailwindcss-radix'
 
-// We want each package to be responsible for its own content
 const config: Omit<Config, 'content'> = {
   darkMode: 'class',
   theme: {
-    /** Adapted from https://vercel.com/geist */
     extend: {
+      /** Adapted from https://vercel.com/geist */
       fontSize: {
         // Heading Sizes
         'heading-72': [
@@ -106,7 +104,6 @@ const config: Omit<Config, 'content'> = {
       },
     },
   },
-  plugins: [tailwindcssRadix({})],
 }
 
 export default config

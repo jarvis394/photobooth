@@ -33,6 +33,9 @@ import calendar from 'dayjs/plugin/calendar'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { Theme } from '@valley/shared'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { getQueryClient } from './utils/query-client'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import './styles/global.css'
 
@@ -227,18 +230,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 const App: React.FC<Route.ComponentProps> = ({ loaderData }) => {
   const theme = useOptionalTheme()
+  const queryClient = getQueryClient()
 
   useToast(loaderData?.toast)
 
   return (
-    <SortableProvider>
-      <HoneypotProvider {...loaderData?.honeypotProps}>
-        <Outlet />
-        <Modals />
-        <UploadsOverlay />
-        <Toaster theme={theme} />
-      </HoneypotProvider>
-    </SortableProvider>
+    <QueryClientProvider client={queryClient}>
+      <SortableProvider>
+        <HoneypotProvider {...loaderData?.honeypotProps}>
+          <Outlet />
+          <Modals />
+          <ReactQueryDevtools />
+          <UploadsOverlay />
+          <Toaster theme={theme} />
+        </HoneypotProvider>
+      </SortableProvider>
+    </QueryClientProvider>
   )
 }
 

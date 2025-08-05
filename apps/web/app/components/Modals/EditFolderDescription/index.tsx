@@ -1,19 +1,14 @@
 import React from 'react'
 import Button from '@valley/ui/Button'
-import ModalHeader from '@valley/ui/ModalHeader'
-import ModalFooter from '@valley/ui/ModalFooter'
-import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import TextArea from '@valley/ui/TextArea'
 import { Form, useParams } from 'react-router'
-import { FoldersEditSchema } from 'app/routes/api+/projects+/$projectId.folders+/$id.edit'
+import { FoldersEditSchema } from 'app/routes/api+/projects+/$projectId.folders+/$folderId.edit'
 import { useRemixForm } from 'remix-hook-form'
 import { useIsPending } from 'app/utils/misc'
 import { ProjectWithFolders } from '@valley/shared'
-import { useProject } from 'app/utils/project'
-import ModalContent from '@valley/ui/ModalContent'
-
-type FormData = z.infer<typeof FoldersEditSchema>
+import { useProject } from 'app/utils/queries/project'
+import { Modal } from '@valley/ui/Modal'
 
 const resolver = zodResolver(FoldersEditSchema)
 
@@ -30,7 +25,7 @@ const ModalContents: React.FC<
   const defaultDescription = currentFolder?.description || ''
   const formAction =
     '/api/projects/' + projectId + '/folders/' + folderId + '/edit'
-  const { register, handleSubmit } = useRemixForm<FormData>({
+  const { register, handleSubmit } = useRemixForm({
     resolver,
     submitConfig: { action: formAction, method: 'POST' },
   })
@@ -38,26 +33,28 @@ const ModalContents: React.FC<
 
   return (
     <>
-      <ModalHeader>Edit Folder Description</ModalHeader>
-      <ModalContent asChild>
-        <Form
-          onSubmit={handleSubmit}
-          id="edit-folder-description-form"
-          method="POST"
-          action={formAction}
-        >
-          <div>
-            <TextArea
-              {...register('description', { value: defaultDescription })}
-              size="lg"
-              defaultValue={defaultDescription}
-              id="folder-description-input"
-              placeholder="Write here anything..."
-            />
-          </div>
-        </Form>
-      </ModalContent>
-      <ModalFooter
+      <Modal.Title>Edit Folder Description</Modal.Title>
+      <Modal.Content
+        render={
+          <Form
+            onSubmit={handleSubmit}
+            id="edit-folder-description-form"
+            method="POST"
+            action={formAction}
+          />
+        }
+      >
+        <div>
+          <TextArea
+            {...register('description', { value: defaultDescription })}
+            size="lg"
+            defaultValue={defaultDescription}
+            id="folder-description-input"
+            placeholder="Write here anything..."
+          />
+        </div>
+      </Modal.Content>
+      <Modal.Footer
         before={
           <Button
             onClick={onClose}
@@ -88,7 +85,8 @@ const ModalContents: React.FC<
 const EditFolderDescriptionModal: React.FC<EditFolderDescriptionModalProps> = ({
   onClose,
 }) => {
-  const project = useProject()
+  const { data } = useProject()
+  const project = data?.project
 
   return <ModalContents onClose={onClose} project={project} />
 }

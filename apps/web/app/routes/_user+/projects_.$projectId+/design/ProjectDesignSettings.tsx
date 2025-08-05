@@ -16,7 +16,7 @@ import IconButton from '@valley/ui/IconButton'
 import { DesktopDevice, Image, Trash } from 'geist-ui-icons'
 import Button from '@valley/ui/Button'
 import { useProjectsStore } from 'app/stores/projects'
-import { useProject } from 'app/utils/project'
+import { useProject } from 'app/utils/queries/project'
 import {
   CoverVariantCenter,
   CoverVariantSplit,
@@ -92,8 +92,9 @@ const GALLERY_THEMES_ICONS_MAP: Record<ProjectGalleryTheme, React.ReactNode> = {
 }
 
 const ProjectDesignSettings: React.FC = () => {
-  const project = useProject()
-  const cover = project.cover
+  const { data } = useProject()
+  const project = data?.project
+  const cover = project?.cover
   const hasCover = cover?.file && cover.file.canHaveThumbnails
   const setProjectFields = useProjectsStore((state) => state.setProjectFields)
   const fetchers = useFetchers()
@@ -104,7 +105,7 @@ const ProjectDesignSettings: React.FC = () => {
   useEffect(() => {
     if (!coverVariantContainer.current) return
     const selectedCoverVariantId =
-      'project-cover-variant-' + project.coverVariant
+      'project-cover-variant-' + project?.coverVariant
     const selectedCoverVariantElement = document.getElementById(
       selectedCoverVariantId
     )
@@ -115,7 +116,9 @@ const ProjectDesignSettings: React.FC = () => {
         behavior: 'smooth',
       })
     }
-  }, [project.coverVariant])
+  }, [project?.coverVariant])
+
+  if (!project) return null
 
   return (
     <div className="flex w-full flex-col gap-6 py-6 md:max-w-[320px]">

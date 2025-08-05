@@ -5,14 +5,18 @@ import { formatNewLine } from 'app/utils/format-new-line'
 import { PencilEdit } from 'geist-ui-icons'
 import React from 'react'
 import styles from './project.module.css'
-import { useProject } from 'app/utils/project'
 import { useParams } from 'react-router'
+import { Route } from './+types'
+import { useProject } from 'app/utils/queries/project'
 
 const FolderInfo: React.FC = () => {
   const { openModal } = useModal()
-  const { folderId } = useParams()
-  const project = useProject()
-  const currentFolder = project?.folders?.find((e) => e.id === folderId)
+  const { projectId = '', folderId = '' } =
+    useParams<Route.ComponentProps['params']>()
+  const { data: projectData } = useProject({ projectId })
+  const currentFolder = projectData?.project?.folders?.find(
+    (e) => e.id === folderId
+  )
 
   const handleEditFolderTitle = () => {
     if (!currentFolder) return
