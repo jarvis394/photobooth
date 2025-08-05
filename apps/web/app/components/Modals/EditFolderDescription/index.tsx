@@ -1,7 +1,5 @@
 import React from 'react'
 import Button from '@valley/ui/Button'
-import ModalHeader from '@valley/ui/ModalHeader'
-import ModalFooter from '@valley/ui/ModalFooter'
 import { zodResolver } from '@hookform/resolvers/zod'
 import TextArea from '@valley/ui/TextArea'
 import { Form, useParams } from 'react-router'
@@ -10,7 +8,7 @@ import { useRemixForm } from 'remix-hook-form'
 import { useIsPending } from 'app/utils/misc'
 import { ProjectWithFolders } from '@valley/shared'
 import { useProject } from 'app/utils/queries/project'
-import ModalContent from '@valley/ui/ModalContent'
+import { Modal } from '@valley/ui/Modal'
 
 const resolver = zodResolver(FoldersEditSchema)
 
@@ -35,26 +33,28 @@ const ModalContents: React.FC<
 
   return (
     <>
-      <ModalHeader>Edit Folder Description</ModalHeader>
-      <ModalContent asChild>
-        <Form
-          onSubmit={handleSubmit}
-          id="edit-folder-description-form"
-          method="POST"
-          action={formAction}
-        >
-          <div>
-            <TextArea
-              {...register('description', { value: defaultDescription })}
-              size="lg"
-              defaultValue={defaultDescription}
-              id="folder-description-input"
-              placeholder="Write here anything..."
-            />
-          </div>
-        </Form>
-      </ModalContent>
-      <ModalFooter
+      <Modal.Title>Edit Folder Description</Modal.Title>
+      <Modal.Content
+        render={
+          <Form
+            onSubmit={handleSubmit}
+            id="edit-folder-description-form"
+            method="POST"
+            action={formAction}
+          />
+        }
+      >
+        <div>
+          <TextArea
+            {...register('description', { value: defaultDescription })}
+            size="lg"
+            defaultValue={defaultDescription}
+            id="folder-description-input"
+            placeholder="Write here anything..."
+          />
+        </div>
+      </Modal.Content>
+      <Modal.Footer
         before={
           <Button
             onClick={onClose}

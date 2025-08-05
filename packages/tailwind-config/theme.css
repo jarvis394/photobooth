@@ -40,8 +40,12 @@
   --color-button-secondary-dimmed: var(--button-secondary-dimmed-bg);
   --color-button-secondary-dimmed-text: var(--button-secondary-dimmed-fg);
   --color-button-secondary-dimmed-border: var(--alpha-transparent-12);
-  --color-button-secondary-dimmed-hovered: var(--button-secondary-dimmed-hovered-bg);
-  --color-button-secondary-dimmed-hovered-text: var(--button-secondary-dimmed-hovered-fg);
+  --color-button-secondary-dimmed-hovered: var(
+    --button-secondary-dimmed-hovered-bg
+  );
+  --color-button-secondary-dimmed-hovered-text: var(
+    --button-secondary-dimmed-hovered-fg
+  );
 
   --color-button-tertiary: var(--button-tertiary-bg);
   --color-button-tertiary-text: var(--button-tertiary-fg);
@@ -113,6 +117,8 @@
   --color-input-border-focused-shadow: var(--input-border-focused-shadow);
   --color-input-border-error: var(--input-border-error);
   --color-input-border-error-shadow: var(--input-border-error-shadow);
+
+  --color-modal-backdrop: var(--modal-backdrop);
 }
 
 @layer base {

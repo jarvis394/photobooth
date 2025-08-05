@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-import Modal from '@valley/ui/Modal'
+import { Modal } from '@valley/ui/Modal'
 import CreateProjectModal from './CreateProject'
 import EditFolderTitleModal from './EditFolderTitle'
 import EditFolderDescriptionModal from './EditFolderDescription'
@@ -45,30 +45,30 @@ export const Modals = () => {
 
   return (
     <>
-      <Modal onDismiss={handleClose} id="create-project">
+      <Modal.Root onDismiss={handleClose} id="create-project">
         <CreateProjectModal onClose={handleClose} />
-      </Modal>
-      <Modal onDismiss={handleClose} id="edit-folder-title">
+      </Modal.Root>
+      <Modal.Root onDismiss={handleClose} id="edit-folder-title">
         <EditFolderTitleModal onClose={handleClose} />
-      </Modal>
-      <Modal onDismiss={handleClose} id="edit-folder-description">
+      </Modal.Root>
+      <Modal.Root onDismiss={handleClose} id="edit-folder-description">
         <EditFolderDescriptionModal onClose={handleClose} />
-      </Modal>
-      <Modal onDismiss={handleClose} id="confirm-folder-deletion">
+      </Modal.Root>
+      <Modal.Root onDismiss={handleClose} id="confirm-folder-deletion">
         <ConfirmFolderDeletionModal onClose={handleClose} />
-      </Modal>
-      <Modal onDismiss={handleClose} id="confirm-folder-clear">
+      </Modal.Root>
+      <Modal.Root onDismiss={handleClose} id="confirm-folder-clear">
         <ConfirmFolderClearModal onClose={handleClose} />
-      </Modal>
-      <Modal onDismiss={handleClose} id="confirm-file-deletion">
+      </Modal.Root>
+      <Modal.Root onDismiss={handleClose} id="confirm-file-deletion">
         <ConfirmFileDeletionModal onClose={handleClose} />
-      </Modal>
-      <Modal onDismiss={handleClose} id="project-folders">
+      </Modal.Root>
+      <Modal.Root onDismiss={handleClose} id="project-folders">
         <ProjectFoldersModal onClose={handleClose} />
-      </Modal>
-      <Modal onDismiss={handleClose} id="set-project-cover">
+      </Modal.Root>
+      <Modal.Root onDismiss={handleClose} id="set-project-cover">
         <SetProjectCoverModal onClose={handleClose} />
-      </Modal>
+      </Modal.Root>
     </>
   )
 }

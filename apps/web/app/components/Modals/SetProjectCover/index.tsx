@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import Button from '@valley/ui/Button'
-import ModalHeader from '@valley/ui/ModalHeader'
-import ModalFooter from '@valley/ui/ModalFooter'
+import { Modal } from '@valley/ui/Modal'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form } from 'react-router'
 import { useRemixForm } from 'remix-hook-form'
@@ -9,7 +8,6 @@ import { useIsPending } from 'app/utils/misc'
 import { useProject, useProjectFolderFiles } from 'app/utils/queries/project'
 import { ProjectWithFolders } from '@valley/shared'
 import { File } from '@valley/db'
-import ModalContent from '@valley/ui/ModalContent'
 import { ProjectSetCoverSchema } from 'app/routes/api+/projects+/$projectId.setCover'
 import ErrorModalContent from '../ErrorModalContent'
 import styles from './SetProjectCover.module.css'
@@ -50,30 +48,32 @@ const ModalContents: React.FC<
 
   return (
     <>
-      <ModalHeader>Set Cover</ModalHeader>
-      <ModalContent asChild>
-        <Form
-          onSubmit={handleSubmit}
-          id="set-project-cover-form"
-          action={formAction}
-          method="POST"
-        >
-          <input
-            {...register('fileId', { required: true })}
-            value={fileId || ''}
-            hidden
+      <Modal.Title>Set Cover</Modal.Title>
+      <Modal.Content
+        render={
+          <Form
+            onSubmit={handleSubmit}
+            id="set-project-cover-form"
+            action={formAction}
+            method="POST"
           />
-          <Image
-            file={file}
-            thumbnail="md"
-            containerProps={{ className: styles.image }}
-          />
-          <p>
-            You are setting file <b>&quot;{file.name}&quot;</b> as project cover
-          </p>
-        </Form>
-      </ModalContent>
-      <ModalFooter
+        }
+      >
+        <input
+          {...register('fileId', { required: true })}
+          value={fileId || ''}
+          hidden
+        />
+        <Image
+          file={file}
+          thumbnail="md"
+          containerProps={{ className: styles.image }}
+        />
+        <p>
+          You are setting file <b>&quot;{file.name}&quot;</b> as project cover
+        </p>
+      </Modal.Content>
+      <Modal.Footer
         before={
           <Button
             onClick={onClose}

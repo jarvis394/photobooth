@@ -17,7 +17,6 @@ import { ProjectService } from './project.server'
 import { FolderService } from './folder.server'
 import { disk } from './drive.server'
 import { createReadableStreamFromReadable } from '@react-router/node'
-import { errors } from 'flydrive'
 
 export type FileData = Omit<
   File,
@@ -168,17 +167,6 @@ export class FileService {
         readable,
       }
     } catch (e) {
-      if (e instanceof errors.E_CANNOT_READ_FILE) {
-        throw new Response('Cannot read file, try again later', {
-          status: 500,
-        })
-      }
-      if (e instanceof errors.E_CANNOT_GET_METADATA) {
-        throw new Response('Cannot get file metadata', {
-          status: 404,
-        })
-      }
-
       throw new Response((e as Error).message, {
         status: 500,
       })

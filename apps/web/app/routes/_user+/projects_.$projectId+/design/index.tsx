@@ -30,7 +30,7 @@ import { useTheme } from 'app/routes/resources+/theme-switch'
 import { useCoversStore } from 'app/stores/covers'
 import { useHints } from 'app/components/ClientHints/ClientHints'
 import Button from '@valley/ui/Button'
-import Modal from '@valley/ui/Modal'
+import { Modal } from '@valley/ui/Modal'
 
 const ProjectDesignDeleteCoverSchema = z.object({
   intent: z.enum(['delete-cover']),
@@ -183,7 +183,10 @@ const ProjectDesignRoute: React.FC<Route.ComponentProps> = () => {
         </div>
       </div>
       {cover && (
-        <Modal isOpen={isMobilePreviewOpen} onOpenChange={setMobilePreviewOpen}>
+        <Modal.Root
+          isOpen={isMobilePreviewOpen}
+          onOpenChange={setMobilePreviewOpen}
+        >
           <div className="m-4 h-[75vh] overflow-hidden rounded-2xl">
             <MobilePreview
               project={project}
@@ -193,7 +196,7 @@ const ProjectDesignRoute: React.FC<Route.ComponentProps> = () => {
               theme={resolvedTheme}
             />
           </div>
-        </Modal>
+        </Modal.Root>
       )}
     </>
   )

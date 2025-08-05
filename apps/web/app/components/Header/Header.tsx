@@ -15,49 +15,43 @@ import { cn, type UserFull } from '@valley/shared'
 import { paperVariants } from '@valley/ui/Paper'
 
 const headerPathPartClasses = cn(
-  "transition-all animate-in fade-in flex min-w-0 shrink items-center gap-0.5 max-sm:has-[~_div[data-visible='true']]:shrink-0 max-sm:has-[~_div[data-visible='true']]:[&_p]:hidden"
+  'flex min-w-10 shrink items-center gap-3 p-1.5',
+  'active:scale-[0.98] rounded-xl cursor-pointer text-base font-semibold select-none [-webkit-tap-highlight-color:transparent]',
+  "max-sm:has-[~_*[data-visible='true']]:shrink-0 max-sm:has-[~_*[data-visible='true']]:[&_p]:hidden sm:has-[~_*[data-visible='false']]:shrink-0"
 )
 
 const PathPartSkeleton: React.FC<{
-  hideSlashOnSm?: boolean
   squareAvatar?: boolean
-}> = ({ hideSlashOnSm, squareAvatar }) => (
-  <div data-visible className="flex min-w-0 shrink items-center gap-2">
-    {hideSlashOnSm && <Slash className="max-sm:hidden" />}
-    {!hideSlashOnSm && <Slash />}
-    <div className="active:scale-0.98 flex min-w-0 shrink cursor-pointer items-center gap-3 text-base font-semibold transition-all select-none [-webkit-tap-highlight-color:transparent]">
-      <Skeleton
-        variant={squareAvatar ? 'rectangular' : 'circular'}
-        className={cn('shrink-0', { 'rounded-md!': squareAvatar })}
-        width={28}
-        height={28}
-      />
-      <Skeleton asChild variant="text" width={96} height={20}>
-        <p />
-      </Skeleton>
-    </div>
+}> = ({ squareAvatar }) => (
+  <div data-visible="true" className={headerPathPartClasses}>
+    <Skeleton
+      variant={squareAvatar ? 'rectangular' : 'circular'}
+      className={cn('shrink-0', { 'rounded-md!': squareAvatar })}
+      width={28}
+      height={28}
+    />
+    <Skeleton asChild variant="text" width={96} height={20}>
+      <p />
+    </Skeleton>
   </div>
 )
 
 const CurrentUser: React.FC<{ user?: UserFull | null }> = ({ user }) => {
   return (
-    <div className={headerPathPartClasses}>
-      <Slash className="max-sm:hidden" />
-      <Link
-        to={'/projects'}
-        className={cn(
-          paperVariants({ variant: 'tertiary', button: true }),
-          'flex min-w-0 shrink items-center gap-3 rounded-xl p-1.5 text-base font-semibold transition-all active:scale-[0.98]'
-        )}
-      >
-        <Avatar src={user?.image} file={user?.avatar}>
-          {user?.name?.[0]?.toUpperCase()}
-        </Avatar>
-        <p className="overflow-hidden pr-0.5 text-nowrap text-ellipsis">
-          {user?.name}
-        </p>
-      </Link>
-    </div>
+    <Link
+      to={'/projects'}
+      className={cn(
+        paperVariants({ variant: 'tertiary', button: true }),
+        headerPathPartClasses
+      )}
+    >
+      <Avatar src={user?.image} file={user?.avatar}>
+        {user?.name?.[0]?.toUpperCase()}
+      </Avatar>
+      <p className="overflow-hidden pr-0.5 text-nowrap text-ellipsis">
+        {user?.name}
+      </p>
+    </Link>
   )
 }
 
@@ -86,41 +80,38 @@ const CurrentProject: React.FC = () => {
   return (
     <div
       data-visible={shouldShow}
-      className={cn(headerPathPartClasses, 'hidden opacity-0', {
-        'flex! opacity-100': shouldShow,
-      })}
+      className="pointer-events-none hidden items-center overflow-hidden opacity-0 transition-all data-[visible='true']:pointer-events-auto data-[visible='true']:flex data-[visible='true']:opacity-100 sm:flex"
     >
+      <Slash className="mr-0.5" />
       {isPending && <PathPartSkeleton squareAvatar />}
       {isSuccess && (
-        <>
-          <Slash className="mr-0.5" />
-          <Link
-            to={'/projects/' + project?.id}
-            className={cn(
-              paperVariants({ variant: 'tertiary', button: true }),
-              'flex min-w-0 shrink items-center gap-3 rounded-xl px-1.5 py-1.5 pr-2 text-base font-semibold transition-all active:scale-[0.98]'
-            )}
-          >
-            {shouldShowCoverFile && (
-              <Avatar
-                key={'project-avatar-' + project?.id}
-                id={'project-avatar-' + project?.id}
-                square
-                file={coverFile}
-              />
-            )}
-            {!shouldShowCoverFile && (
-              <Avatar square>{project?.title?.[0]?.toUpperCase()}</Avatar>
-            )}
-            <p className="overflow-hidden text-nowrap text-ellipsis">
-              {project?.title}
-            </p>
-          </Link>
-          <IconButton className="h-10! w-7! p-0!" size="sm" variant="tertiary">
-            <MenuExpand />
-          </IconButton>
-        </>
+        <Link
+          to={'/projects/' + project?.id}
+          className={cn(
+            paperVariants({ variant: 'tertiary', button: true }),
+            headerPathPartClasses,
+            'pr-2'
+          )}
+        >
+          {shouldShowCoverFile && (
+            <Avatar
+              key={'project-avatar-' + project?.id}
+              id={'project-avatar-' + project?.id}
+              square
+              file={coverFile}
+            />
+          )}
+          {!shouldShowCoverFile && (
+            <Avatar square>{project?.title?.[0]?.toUpperCase()}</Avatar>
+          )}
+          <p className="overflow-hidden text-nowrap text-ellipsis">
+            {project?.title}
+          </p>
+        </Link>
       )}
+      <IconButton className="h-10! w-7! p-0!" size="sm" variant="tertiary">
+        <MenuExpand />
+      </IconButton>
     </div>
   )
 }
@@ -141,9 +132,10 @@ const Header: React.FC = () => {
           className="animate-in fade-in fixed top-4 left-6 z-20 inline-flex no-underline"
         />
       </Link>
-      <nav className="relative flex w-full justify-between gap-2 sm:pl-11">
+      <nav className="relative flex w-full justify-between gap-2 sm:pl-10">
         <div className="flex min-w-0 shrink items-center">
-          <Suspense fallback={<PathPartSkeleton hideSlashOnSm />}>
+          <Slash className="mr-0.5 max-sm:hidden" />
+          <Suspense fallback={<PathPartSkeleton />}>
             <Await resolve={user} errorElement={<h5>Error fetching user</h5>}>
               {(resolvedUser) => <CurrentUser user={resolvedUser} />}
             </Await>

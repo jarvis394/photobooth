@@ -13,7 +13,7 @@ import IconButton from '@valley/ui/IconButton'
 import { MoreHorizontal } from 'geist-ui-icons'
 import { lowerFirstLetter } from 'app/utils/misc'
 import Hidden from '@valley/ui/Hidden'
-import Modal from '@valley/ui/Modal'
+import { Modal } from '@valley/ui/Modal'
 import ConfirmConnectionDeleteModal from '../Modals/ConfirmConnectionDelete'
 import { Await } from 'react-router'
 import dayjs from 'dayjs'
@@ -109,7 +109,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ data, canDelete }) => {
             </Suspense>
           </Menu.Content>
         </Menu.Root>
-        <Modal
+        <Modal.Root
           isOpen={isDeletionModalOpen}
           onDismiss={handleDeletionModalClose}
         >
@@ -117,7 +117,7 @@ const AccountCard: React.FC<AccountCardProps> = ({ data, canDelete }) => {
             data={data}
             onClose={handleDeletionModalClose}
           />
-        </Modal>
+        </Modal.Root>
       </div>
     </Stack>
   )

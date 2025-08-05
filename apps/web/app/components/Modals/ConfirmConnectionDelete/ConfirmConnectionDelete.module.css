@@ -1,9 +1,0 @@
-.confirmConnectionDelete__content {
-  color: var(--text-secondary);
-  padding-top: 4px !important;
-}
-
-.confirmConnectionDelete__label {
-  color: var(--text-primary);
-  font-weight: 500;
-}

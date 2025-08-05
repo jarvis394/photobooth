@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import Button from '@valley/ui/Button'
-import ModalHeader from '@valley/ui/ModalHeader'
-import ModalFooter from '@valley/ui/ModalFooter'
-import ModalContent from '@valley/ui/ModalContent'
+import { Modal } from '@valley/ui/Modal'
 import { useRemixForm } from 'remix-hook-form'
 import Note from '@valley/ui/Note'
 import { Form, useParams } from 'react-router'
@@ -45,23 +43,25 @@ const ModalContents: React.FC<
 
   return (
     <>
-      <ModalHeader>Delete File</ModalHeader>
-      <ModalContent asChild>
-        <Form
-          onSubmit={handleSubmit}
-          id="confirm-folder-deletion-form"
-          method="POST"
-          action={formAction}
-        >
-          <p>
-            File <b>&quot;{file.name}&quot;</b> will be deleted.
-          </p>
-          <Note variant="warning" fill>
-            You can restore this file from trash later
-          </Note>
-        </Form>
-      </ModalContent>
-      <ModalFooter
+      <Modal.Title>Delete File</Modal.Title>
+      <Modal.Content
+        render={
+          <Form
+            onSubmit={handleSubmit}
+            id="confirm-folder-deletion-form"
+            method="POST"
+            action={formAction}
+          />
+        }
+      >
+        <p>
+          File <b>&quot;{file.name}&quot;</b> will be deleted.
+        </p>
+        <Note variant="warning" fill>
+          You can restore this file from trash later
+        </Note>
+      </Modal.Content>
+      <Modal.Footer
         before={
           <Button
             tabIndex={0}

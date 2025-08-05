@@ -1,9 +1,7 @@
 import Button from '@valley/ui/Button'
-import ModalFooter from '@valley/ui/ModalFooter'
-import ModalHeader from '@valley/ui/ModalHeader'
+import { Modal } from '@valley/ui/Modal'
 import Note from '@valley/ui/Note'
 import React from 'react'
-import ModalContent from '@valley/ui/ModalContent'
 
 type ErrorModalContentProps = React.PropsWithChildren<{
   onClose: () => void
@@ -17,13 +15,13 @@ const ErrorModalContent: React.FC<ErrorModalContentProps> = ({
 }) => {
   return (
     <>
-      <ModalHeader>{title}</ModalHeader>
-      <ModalContent>
+      <Modal.Title>{title}</Modal.Title>
+      <Modal.Content>
         <Note variant="alert" fill>
           {children}
         </Note>
-      </ModalContent>
-      <ModalFooter
+      </Modal.Content>
+      <Modal.Footer
         before={<></>}
         after={
           <Button onClick={onClose} variant="primary" size="md">
